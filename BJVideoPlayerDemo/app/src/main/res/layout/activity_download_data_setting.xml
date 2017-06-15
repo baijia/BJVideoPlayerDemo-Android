@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/et_task_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="任务名称" />
+    </android.support.design.widget.TextInputLayout>
+
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/et_task_url"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="下载地址url（复制过来）" />
+    </android.support.design.widget.TextInputLayout>
+
+    <Button
+        android:id="@+id/btn_download_add_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="添加上述任务" />
+
+    <Button
+        android:id="@+id/btn_download_delete_all"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="清空所有任务" />
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_download_data"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp">
+
+    </android.support.v7.widget.RecyclerView>
+
+</LinearLayout>
