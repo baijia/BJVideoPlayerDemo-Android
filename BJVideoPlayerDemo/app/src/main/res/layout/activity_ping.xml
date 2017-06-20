@@ -4,7 +4,8 @@
     android:id="@+id/activity_ping"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context="com.baijiahulian.video.PingActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

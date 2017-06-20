@@ -21,194 +21,259 @@
         android:layout_height="180dp"
         app:aspect_ratio="fit_parent"></com.baijiahulian.player.BJPlayerView>
 
-    <TextView
-        android:id="@+id/tv_deploy_type"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="#000000" />
+        android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="top|left"
-        android:orientation="horizontal">
-
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <EditText
-                android:id="@+id/serialId"
-                android:layout_width="80dp"
-                android:layout_height="wrap_content"
-                android:hint="序列号"
-                android:text="0" />
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <EditText
-                android:id="@+id/startPos"
-                android:layout_width="80dp"
-                android:layout_height="wrap_content"
-                android:hint="起播位置"
-                android:text="0" />
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/videoId"
+            <TextView
+                android:id="@+id/tv_deploy_type"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="视频ID"
-                android:text="120742" />
-        </android.support.design.widget.TextInputLayout>
-    </LinearLayout>
+                android:textColor="#000000" />
 
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <EditText
-            android:id="@+id/et_token"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="视频id的token,不能是空，我就不判断了"
-            android:maxLines="6"
-            android:minLines="1"
-            android:text="test12345678" />
-    </android.support.design.widget.TextInputLayout>
-
-
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <EditText
-            android:id="@+id/localVideo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="本地视频名或网络地址"
-            android:maxLines="6"
-            android:minLines="1"
-            android:text="123.mp4" />
-    </android.support.design.widget.TextInputLayout>
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="top|left"
-        android:orientation="horizontal">
-
-        <RadioGroup
-            android:id="@+id/ad_play_method"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <RadioButton
-                android:id="@+id/ad_no"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="无广告" />
+                android:gravity="top|left"
+                android:orientation="horizontal">
 
-            <RadioButton
-                android:id="@+id/ad_yes"
-                android:layout_width="wrap_content"
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/serialId"
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:hint="序列号"
+                        android:text="0" />
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/startPos"
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:hint="起播位置"
+                        android:text="0" />
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/videoId"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="视频ID"
+                        android:text="120742" />
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/et_token"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="视频id的token,不能是空，我就不判断了"
+                    android:maxLines="6"
+                    android:minLines="1"
+                    android:text="test12345678" />
+            </android.support.design.widget.TextInputLayout>
+
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/localVideo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="本地视频名或网络地址(不加密),读根目录下/aa_video_downloaded/"
+                    android:maxLines="6"
+                    android:minLines="1"
+                    android:text="120742_low" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/local_video_encrypt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="本地视频(加密)读根目录下/aa_video_downloaded/"
+                    android:maxLines="6"
+                    android:minLines="1"
+                    android:text="120742_low" />
+            </android.support.design.widget.TextInputLayout>
+
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="有广告" />
-        </RadioGroup>
-    </LinearLayout>
+                android:visibility="gone">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="top|left"
-        android:orientation="horizontal">
+                <EditText
+                    android:id="@+id/local_full_path"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="本地视频绝对路径"
+                    android:maxLines="6"
+                    android:minLines="1" />
+            </android.support.design.widget.TextInputLayout>
 
-        <Button
-            android:id="@+id/button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="设置ID" />
 
-        <Button
-            android:id="@+id/button_sl"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="设置ID与列表"
-            android:visibility="visible" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/button_localVideo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:text="设置视频路径" />
+                <RadioGroup
+                    android:id="@+id/ad_play_method"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
-    </LinearLayout>
+                    <RadioButton
+                        android:id="@+id/ad_no"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="无广告" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="top|left"
-        android:orientation="horizontal">
+                    <RadioButton
+                        android:id="@+id/ad_yes"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="有广告" />
+                </RadioGroup>
 
-        <Button
-            android:id="@+id/button_pause"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Pause"
-            android:textAllCaps="false" />
+                <Button
+                    android:id="@+id/btn_download_test"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="下载测试" />
+            </LinearLayout>
 
-        <Button
-            android:id="@+id/button_start"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Start"
-            android:textAllCaps="false" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="top|left"
+                android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/button_play"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="PlayVideo"
-            android:textAllCaps="false" />
+                <Button
+                    android:id="@+id/button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="设置ID" />
 
-        <Button
-            android:id="@+id/button_move"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Move"
-            android:textAllCaps="false" />
-    </LinearLayout>
+                <Button
+                    android:id="@+id/button_play"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="PlayVideo"
+                    android:textAllCaps="false" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="top|left"
-        android:orientation="horizontal">
+                <Button
+                    android:id="@+id/button_sl"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="设置ID与列表"
+                    android:visibility="gone" />
 
-        <Button
-            android:id="@+id/button_ping"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="ping"
-            android:textAllCaps="false" />
+                <Button
+                    android:id="@+id/button_localVideo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:text="不加密播放" />
 
-        <Button
-            android:id="@+id/button_upload"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="日志上传"
-            android:textAllCaps="false" />
+                <Button
+                    android:id="@+id/button_localVideo_encrypt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:text="加密播放" />
 
-    </LinearLayout>
+
+                <Button
+                    android:id="@+id/btn_abs_path"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:text="绝对路径"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="top|left"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_pause"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Pause"
+                    android:textAllCaps="false" />
+
+                <Button
+                    android:id="@+id/button_start"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Start"
+                    android:textAllCaps="false" />
+
+                <Button
+                    android:id="@+id/button_move"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Move"
+                    android:textAllCaps="false" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="top|left"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_ping"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ping"
+                    android:textAllCaps="false" />
+
+                <Button
+                    android:id="@+id/button_upload"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="日志上传"
+                    android:textAllCaps="false" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
 </LinearLayout>

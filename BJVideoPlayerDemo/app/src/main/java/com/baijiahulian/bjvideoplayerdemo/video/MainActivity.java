@@ -1,5 +1,6 @@
 package com.baijiahulian.bjvideoplayerdemo.video;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -16,7 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baijiahulian.bjvideoplayerdemo.R;
-import com.baijiahulian.bjvideoplayerdemo.StorageUtil;
+import com.baijiahulian.bjvideoplayerdemo.download.DownloadActivity;
 import com.baijiahulian.common.networkv2.BJNetCall;
 import com.baijiahulian.common.networkv2.BJNetCallback;
 import com.baijiahulian.common.networkv2.BJNetRequestManager;
@@ -24,6 +25,7 @@ import com.baijiahulian.common.networkv2.BJNetworkClient;
 import com.baijiahulian.common.networkv2.BJRequestBody;
 import com.baijiahulian.common.networkv2.BJResponse;
 import com.baijiahulian.common.networkv2.HttpException;
+import com.baijiahulian.common.permission.AppPermissions;
 import com.baijiahulian.player.BJFileLog;
 import com.baijiahulian.player.BJPlayerView;
 import com.baijiahulian.player.OnPlayerViewListener;
@@ -45,13 +47,15 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+
 public class MainActivity extends AppCompatActivity {
 
     BJPlayerView playerView;
     EditText etToken;
     private String TOKEN = "test12345678";
     private TextView tvDeploy;
-    String sandBoxDir = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +63,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_video);
         int type = getIntent().getIntExtra("extra_data", 0);
 
-        sandBoxDir = StorageUtil.getSaveDirector(this);
         etToken = (EditText) findViewById(R.id.et_token);
         tvDeploy = (TextView) findViewById(R.id.tv_deploy_type);
         if (type == BJPlayerView.PLAYER_DEPLOY_DEBUG) {
@@ -81,8 +84,6 @@ public class MainActivity extends AppCompatActivity {
         playerView.initPartner(32975272, type);
         playerView.setHeadTailPlayMethod(BJPlayerView.HEAD_TAIL_PLAY_NONE);
         playerView.setVideoEdgePaddingColor(Color.argb(255, 200, 0, 0));
-        //开启本地文件日志功能
-//        BJFileLog.start();
 
         playerView.setOnPlayerViewListener(new OnPlayerViewListener() {
             @Override
@@ -100,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onPlay(BJPlayerView playerView) {
-                System.out.println("hola: player onPlay");
+                playerView.setUserInfo("ethanhola");
             }
 
             @Override
@@ -132,8 +133,8 @@ public class MainActivity extends AppCompatActivity {
             public void onPlayCompleted(BJPlayerView playerView, VideoItem item, SectionItem nextSection) {
                 if (nextSection != null) {
                     // play next section
-                    playerView.setVideoId(0, nextSection.videoId, etToken.getText().toString().trim());
-                    playerView.playVideo();
+//                    playerView.setVideoId(0, nextSection.videoId, etToken.getText().toString().trim());
+//                    playerView.playVideo();
                 }
             }
 
@@ -155,6 +156,7 @@ public class MainActivity extends AppCompatActivity {
 
                 playerView.setVideoId(serialId, videoId, etToken.getText().toString().trim());
                 playerView.setCustomSectionList(null);
+
 //                playerView.setVideoPath("http://d.gsxservice.com/logo_video_start.mp4");
                 Toast.makeText(MainActivity.this, "SetVideoId OK!", Toast.LENGTH_SHORT).show();
             }
@@ -187,23 +189,47 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //不加密播放，传视频网络地址或者本地文件绝对路径
         findViewById(R.id.button_localVideo).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String input = ((EditText) findViewById(R.id.localVideo)).getText().toString();
                 if (input.startsWith("http://")) {
                     playerView.setVideoPath(input);
+                    playerView.playVideo(0);
                     Toast.makeText(MainActivity.this, "设置网络地址" + input, Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
                     String root = Environment.getExternalStorageDirectory().getAbsolutePath();
-                    String path = root + "/" + ((EditText) findViewById(R.id.localVideo)).getText().toString();
+                    String path = root + File.separator + "aa_video_downloaded" + File.separator +
+                            ((EditText) findViewById(R.id.localVideo)).getText().toString();
                     File file = new File(path);
                     if (file.exists()) {
                         playerView.setVideoPath(path);
+                        playerView.playVideo(0);
                     } else {
-                        Toast.makeText(MainActivity.this, path + "不存在", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, path + "不存在的", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(MainActivity.this, "找不到存储卡！", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        //加密播放，传本地视频file协议
+        findViewById(R.id.button_localVideo_encrypt).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+                    String encryptFileName = ((EditText) findViewById(R.id.local_video_encrypt)).getText().toString();
+                    String root = Environment.getExternalStorageDirectory().getAbsolutePath();
+                    String path = root + File.separator + "aa_video_downloaded" + File.separator + encryptFileName;
+                    File file = new File(path);
+                    if (file.exists()) {
+                        playerView.setVideoPath("file://" + path);
+                        playerView.playVideo(0);
+                    } else {
+                        Toast.makeText(MainActivity.this, path + "不存在的", Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     Toast.makeText(MainActivity.this, "找不到存储卡！", Toast.LENGTH_SHORT).show();
@@ -264,6 +290,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        //上传日志文件给后台，要有读写sd卡权限
         findViewById(R.id.button_upload).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -290,6 +317,39 @@ public class MainActivity extends AppCompatActivity {
                         });
                     }
                 });
+            }
+        });
+
+        findViewById(R.id.btn_abs_path).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText etAbs = (EditText) findViewById(R.id.local_full_path);
+                String path = etAbs.getText().toString().trim();
+                File file = new File(path);
+                if (file.exists()) {
+                    playerView.setVideoPath(path);
+                    playerView.playVideo(0);
+                } else {
+                    Toast.makeText(MainActivity.this, path + "不存在", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        findViewById(R.id.btn_download_test).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AppPermissions.newPermissions(MainActivity.this)
+                        .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Action1<Boolean>() {
+                            @Override
+                            public void call(Boolean aBoolean) {
+                                if (aBoolean) {
+                                    startActivity(new Intent(MainActivity.this, DownloadActivity.class));
+                                } else {
+                                    Toast.makeText(MainActivity.this, "没有获取读写sd卡权限", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
             }
         });
 
@@ -334,6 +394,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * @deprecated
+     */
     public void querySectionListThenSet(final long serialId, final long videoId, final String sign, final Handler handler) {
         String queryUrl = "http://test-api.baijiacloud.com/vod/video/getPlayList";
         Map<String, String> params = new HashMap<>();

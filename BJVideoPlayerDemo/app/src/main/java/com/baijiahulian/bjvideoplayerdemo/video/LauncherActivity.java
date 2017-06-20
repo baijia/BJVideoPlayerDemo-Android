@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.Button;
 
 import com.baijiahulian.bjvideoplayerdemo.R;
-import com.baijiahulian.bjvideoplayerdemo.download.DownloadActivity;
 import com.baijiahulian.player.BJPlayerView;
 
 public class LauncherActivity extends AppCompatActivity {
@@ -45,11 +44,11 @@ public class LauncherActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.btn_download_lab).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(LauncherActivity.this, DownloadActivity.class));
-            }
-        });
+//        findViewById(R.id.btn_download_lab).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                startActivity(new Intent(LauncherActivity.this, DownloadActivity.class));
+//            }
+//        });
     }
 }

@@ -2,12 +2,13 @@ package com.baijiahulian.bjvideoplayerdemo.download;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -16,7 +17,8 @@ import android.widget.Toast;
 import com.baijiahulian.bjvideoplayerdemo.R;
 import com.baijiahulian.downloader.download.DownloadInfo;
 import com.baijiahulian.downloader.download.DownloadManager;
-import com.baijiahulian.downloader.download.DownloadService;
+import com.baijiahulian.downloader.download.VideoDownloadManager;
+import com.baijiahulian.downloader.download.VideoDownloadService;
 import com.baijiahulian.downloader.listener.DownloadListener;
 import com.baijiahulian.downloader.task.ExecutorWithListener;
 
@@ -29,7 +31,7 @@ public class DownloadManagerActivity extends AppCompatActivity implements View.O
 
     private List<DownloadInfo> allTask;
     private MyAdapter adapter;
-    private DownloadManager downloadManager;
+    private VideoDownloadManager downloadManager;
 
     @Bind(R.id.listView)
     ListView listView;
@@ -40,11 +42,12 @@ public class DownloadManagerActivity extends AppCompatActivity implements View.O
         setContentView(R.layout.activity_download_manager);
         ButterKnife.bind(this);
 
-        downloadManager = DownloadService.getDownloadManager(this);
+        downloadManager = VideoDownloadService.getDownloadManager(this);
+        //获取所有任务列表
         allTask = downloadManager.getAllTask();
         adapter = new MyAdapter();
         listView.setAdapter(adapter);
-
+        //设置全局监听
         downloadManager.getThreadPool().getExecutor().addOnAllTaskEndListener(this);
     }
 
@@ -74,15 +77,8 @@ public class DownloadManagerActivity extends AppCompatActivity implements View.O
 
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.removeAll:
-                downloadManager.removeAllTask();
-                adapter.notifyDataSetChanged();  //移除的时候需要调用
-                break;
             case R.id.pauseAll:
                 downloadManager.pauseAllTask();
-                break;
-            case R.id.stopAll:
-                downloadManager.stopAllTask();
                 break;
             case R.id.startAll:
                 downloadManager.startAllTask();
@@ -92,6 +88,10 @@ public class DownloadManagerActivity extends AppCompatActivity implements View.O
                 adapter.notifyDataSetChanged();
                 break;
         }
+    }
+
+    public void printMsg(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
     }
 
     private class MyAdapter extends BaseAdapter {
@@ -123,16 +123,11 @@ public class DownloadManagerActivity extends AppCompatActivity implements View.O
             }
             holder.refresh(downloadInfo);
 
-            //对于非进度更新的ui放在这里，对于实时更新的进度ui，放在holder中
-            DownloadModel apk = (DownloadModel) downloadInfo.getData();
-            if (apk != null) {
-                holder.name.setText(apk.getName());
-            } else {
-                holder.name.setText(downloadInfo.getFileName());
-            }
+            holder.name.setText(downloadInfo.getTaskKey());
             holder.download.setOnClickListener(holder);
             holder.remove.setOnClickListener(holder);
             holder.restart.setOnClickListener(holder);
+            holder.removeFile.setOnClickListener(holder);
 
             DownloadListener downloadListener = new MyDownloadListener();
             downloadListener.setUserTag(holder);
@@ -143,7 +138,6 @@ public class DownloadManagerActivity extends AppCompatActivity implements View.O
 
     private class ViewHolder implements View.OnClickListener {
         private DownloadInfo downloadInfo;
-        private ImageView icon;
         private TextView name;
         private TextView downloadSize;
         private TextView tvProgress;
@@ -152,10 +146,11 @@ public class DownloadManagerActivity extends AppCompatActivity implements View.O
         private Button remove;
         private Button restart;
         private ProgressBar pb;
+        private EditText etItemToken;
+        private Button removeFile;
 
 
         public ViewHolder(View convertView) {
-            icon = (ImageView) convertView.findViewById(R.id.icon);
             name = (TextView) convertView.findViewById(R.id.name);
             downloadSize = (TextView) convertView.findViewById(R.id.downloadSize);
             tvProgress = (TextView) convertView.findViewById(R.id.tvProgress);
@@ -164,6 +159,8 @@ public class DownloadManagerActivity extends AppCompatActivity implements View.O
             remove = (Button) convertView.findViewById(R.id.remove);
             restart = (Button) convertView.findViewById(R.id.restart);
             pb = (ProgressBar) convertView.findViewById(R.id.pb_progress);
+            etItemToken = (EditText) convertView.findViewById(R.id.et_item_token);
+            removeFile = (Button) convertView.findViewById(R.id.remove_file);
         }
 
         public void refresh(DownloadInfo downloadInfo) {
@@ -171,8 +168,6 @@ public class DownloadManagerActivity extends AppCompatActivity implements View.O
             refresh();
         }
 
-        //对于实时更新的进度ui，放在这里，例如进度的显示，而图片加载等，不要放在这，会不停的重复回调
-        //也会导致内存泄漏
         private void refresh() {
             String downloadLength = Formatter.formatFileSize(DownloadManagerActivity.this, downloadInfo.getDownloadLength());
             String totalLength = Formatter.formatFileSize(DownloadManagerActivity.this, downloadInfo.getTotalLength());
@@ -208,20 +203,40 @@ public class DownloadManagerActivity extends AppCompatActivity implements View.O
                     case DownloadManager.PAUSE:
                     case DownloadManager.NONE:
                     case DownloadManager.ERROR:
-                        downloadManager.addTask(downloadInfo.getUrl(), downloadInfo.getRequest(), downloadInfo.getListener());
+                        //token 上层传过来
+                        String token = etItemToken.getText().toString().trim();
+                        if (TextUtils.isEmpty(token)) {
+                            token = "test12345678";
+                        }
+                        downloadManager.addDownloadVideoTask(downloadInfo.getVideoId(), token, downloadInfo.getVideoType(),
+                                downloadInfo.getEncryptType(), new VideoDownloadManager.OnVideoInfoGetListener() {
+                                    @Override
+                                    public void onVideoInfoGetSuccess() {
+                                        adapter.notifyDataSetChanged();
+                                    }
+
+                                    @Override
+                                    public void onVideoInfoGetFailed(String msg) {
+                                        printMsg(msg);
+                                    }
+                                });
                         break;
                     case DownloadManager.DOWNLOADING:
-                        downloadManager.pauseTask(downloadInfo.getUrl());
+                        downloadManager.pauseTask(downloadInfo.getTaskKey());
                         break;
                     case DownloadManager.FINISH:
                         break;
                 }
                 refresh();
+
             } else if (v.getId() == remove.getId()) {
-                downloadManager.removeTask(downloadInfo.getUrl());
+                downloadManager.removeTask(downloadInfo.getTaskKey());
                 adapter.notifyDataSetChanged();
             } else if (v.getId() == restart.getId()) {
-                downloadManager.restartTask(downloadInfo.getUrl());
+                downloadManager.restartTask(downloadInfo.getTaskKey());
+            } else if (v.getId() == removeFile.getId()) {
+                downloadManager.removeTask(downloadInfo.getTaskKey(), true);
+                adapter.notifyDataSetChanged();
             }
         }
     }
@@ -232,12 +247,12 @@ public class DownloadManagerActivity extends AppCompatActivity implements View.O
         public void onProgress(DownloadInfo downloadInfo) {
             if (getUserTag() == null) return;
             ViewHolder holder = (ViewHolder) getUserTag();
-            holder.refresh();  //这里不能使用传递进来的 DownloadInfo，否者会出现条目错乱的问题
+            holder.refresh();
         }
 
         @Override
         public void onFinish(DownloadInfo downloadInfo) {
-            Toast.makeText(DownloadManagerActivity.this, "下载完成:" + downloadInfo.getTargetPath(), Toast.LENGTH_SHORT).show();
+
         }
 
         @Override

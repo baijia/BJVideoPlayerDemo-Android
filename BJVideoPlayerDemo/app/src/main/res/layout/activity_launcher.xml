@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context="com.baijiahulian.video.LauncherActivity">
 
     <Button
         android:id="@+id/btn_test"
@@ -24,11 +25,11 @@
         android:layout_height="wrap_content"
         android:text="online环境" />
 
-    <Button
-        android:id="@+id/btn_download_lab"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="下载模块(测试阶段，慎用)" />
+    <!--<Button-->
+        <!--android:id="@+id/btn_download_lab"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="下载测试" />-->
 
 
 </LinearLayout>

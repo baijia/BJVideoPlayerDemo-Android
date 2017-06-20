@@ -6,6 +6,7 @@
     android:gravity="center"
     android:orientation="horizontal"
     android:paddingBottom="10dp"
+    android:paddingLeft="10dp"
     android:paddingTop="10dp">
 
     <ImageView
@@ -13,7 +14,8 @@
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:padding="5dp"
-        android:src="@mipmap/ic_launcher" />
+        android:src="@mipmap/ic_launcher"
+        android:visibility="gone" />
 
     <LinearLayout
         android:layout_width="0dp"
@@ -71,6 +73,13 @@
             android:layout_width="match_parent"
             android:layout_height="4dp"
             android:progressDrawable="@drawable/shape_download_progress" />
+
+        <EditText
+            android:id="@+id/et_item_token"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="↑这个视频文件的token，百家云测试环境不需要关心这个"
+            android:textSize="12sp" />
     </LinearLayout>
 
     <Button
@@ -90,8 +99,19 @@
         android:layout_gravity="center"
         android:background="#3E0"
         android:padding="5dp"
-        android:text="删除"
+        android:text="只删除任务"
         android:textColor="#FFF" />
+
+    <Button
+        android:id="@+id/remove_file"
+        android:layout_width="40dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:background="#135900"
+        android:padding="5dp"
+        android:text="删除任务和文件"
+        android:textColor="#FFF" />
+
 
     <Button
         android:id="@+id/restart"
