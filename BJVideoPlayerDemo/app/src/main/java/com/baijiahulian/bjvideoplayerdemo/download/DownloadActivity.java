@@ -100,10 +100,7 @@ public class DownloadActivity extends AppCompatActivity {
                 }
 
                 //添加一个下载任务，vid:视频id，token:视频token，type：视频清晰度（0普清 1高清 2超清），encryptType：加密类型（0 不加密，1加密）
-                /**
-                 * !!!视频加密正在开发中，这里默认不加密
-                 * */
-                downloadManager.addDownloadVideoTask(Integer.valueOf(vid), token, type, 0, new VideoDownloadManager.OnVideoInfoGetListener() {
+                downloadManager.addDownloadVideoTask(Integer.valueOf(vid), token, type, encryptType, new VideoDownloadManager.OnVideoInfoGetListener() {
                     @Override
                     public void onVideoInfoGetSuccess() {
                         runOnUiThread(new Runnable() {
