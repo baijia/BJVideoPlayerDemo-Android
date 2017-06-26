@@ -56,22 +56,23 @@ public class MainActivity extends AppCompatActivity {
     EditText etToken;
     private String TOKEN = "test12345678";
     private TextView tvDeploy;
+    private int deployType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video);
-        int type = getIntent().getIntExtra("extra_data", 0);
+        deployType = getIntent().getIntExtra("extra_data", 0);
 
         etToken = (EditText) findViewById(R.id.et_token);
         tvDeploy = (TextView) findViewById(R.id.tv_deploy_type);
-        if (type == BJPlayerView.PLAYER_DEPLOY_DEBUG) {
+        if (deployType == BJPlayerView.PLAYER_DEPLOY_DEBUG) {
             etToken.setText("test12345678");
             tvDeploy.setText("当前环境： test");
-        } else if (type == BJPlayerView.PLAYER_DEPLOY_BETA) {
+        } else if (deployType == BJPlayerView.PLAYER_DEPLOY_BETA) {
             etToken.setText("");
             tvDeploy.setText("当前环境： beta");
-        } else if (type == BJPlayerView.PLAYER_DEPLOY_ONLINE) {
+        } else if (deployType == BJPlayerView.PLAYER_DEPLOY_ONLINE) {
             etToken.setText("");
             tvDeploy.setText("当前环境： online");
         }
@@ -81,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
         playerView.setTopPresenter(new BJTopViewPresenter(playerView.getTopView()));
         playerView.setCenterPresenter(new BJCenterViewPresenter(playerView.getCenterView()));
 
-        playerView.initPartner(32975272, type);
+        playerView.initPartner(32975272, deployType);
         playerView.setHeadTailPlayMethod(BJPlayerView.HEAD_TAIL_PLAY_NONE);
         playerView.setVideoEdgePaddingColor(Color.argb(255, 200, 0, 0));
 
@@ -344,7 +345,9 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void call(Boolean aBoolean) {
                                 if (aBoolean) {
-                                    startActivity(new Intent(MainActivity.this, DownloadActivity.class));
+                                    Intent i = new Intent(MainActivity.this, DownloadActivity.class);
+                                    i.putExtra("extra_data", deployType);
+                                    startActivity(i);
                                 } else {
                                     Toast.makeText(MainActivity.this, "没有获取读写sd卡权限", Toast.LENGTH_SHORT).show();
                                 }

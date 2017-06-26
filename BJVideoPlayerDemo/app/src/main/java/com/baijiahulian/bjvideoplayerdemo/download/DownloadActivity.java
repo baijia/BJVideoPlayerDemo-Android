@@ -50,8 +50,10 @@ public class DownloadActivity extends AppCompatActivity {
         setContentView(R.layout.activity_download);
         ButterKnife.bind(this);
 
-        //初始化
+        //全局初始化
         downloadManager = VideoDownloadService.getDownloadManager(this);
+        //下载业务层初始化
+        downloadManager.initDownloadPartner(32975272, getIntent().getIntExtra("extra_data", 0));
         //设置下载目标路径
         downloadManager.setTargetFolder(Environment.getExternalStorageDirectory().getAbsolutePath() + "/aa_video_downloaded/");
 
