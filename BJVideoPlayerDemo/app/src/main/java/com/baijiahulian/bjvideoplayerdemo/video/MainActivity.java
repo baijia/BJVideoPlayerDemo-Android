@@ -89,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
         playerView.setOnPlayerViewListener(new OnPlayerViewListener() {
             @Override
             public void onVideoInfoInitialized(BJPlayerView playerView, HttpException exception) {
+                //TODO: 视频信息初始化结束
                 if (exception != null) {
                     // 视频信息初始化成功
                     VideoItem videoItem = playerView.getVideoItem();
@@ -97,50 +98,47 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onPause(BJPlayerView playerView) {
-
+                //TODO: video暂停
             }
 
             @Override
             public void onPlay(BJPlayerView playerView) {
-                playerView.setUserInfo("ethanhola");
+                //TODO: 开始播放
             }
 
             @Override
             public void onError(BJPlayerView playerView, int code) {
-
+                //TODO: 播放出错
             }
 
             @Override
             public void onUpdatePosition(BJPlayerView playerView, int position) {
-
+                //TODO: 播放过程中更新播放位置
             }
 
             @Override
             public void onSeekComplete(BJPlayerView playerView, int position) {
-
+                //TODO: 拖动进度条
             }
 
             @Override
             public void onSpeedUp(BJPlayerView playerView, float speedUp) {
-
+                //TODO: 设置倍速播放
             }
 
             @Override
             public void onVideoDefinition(BJPlayerView playerView, int definition) {
-
+                //TODO: 设置清晰度完成
             }
 
             @Override
             public void onPlayCompleted(BJPlayerView playerView, VideoItem item, SectionItem nextSection) {
-                if (nextSection != null) {
-                    // play next section
-//                    playerView.setVideoId(0, nextSection.videoId, etToken.getText().toString().trim());
-//                    playerView.playVideo();
-                }
+                //TODO: 当前视频播放完成 [nextSection已被废弃，请勿使用]
             }
 
             @Override
             public void onVideoPrepared(BJPlayerView playerView) {
+                //TODO: 准备好了，马上要播放
                 // 可以在这时获取视频时长
                 playerView.getDuration();
             }

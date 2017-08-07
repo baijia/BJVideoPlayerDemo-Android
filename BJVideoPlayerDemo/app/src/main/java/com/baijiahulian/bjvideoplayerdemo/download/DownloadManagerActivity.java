@@ -19,6 +19,7 @@ import com.baijiahulian.downloader.download.DownloadInfo;
 import com.baijiahulian.downloader.download.DownloadManager;
 import com.baijiahulian.downloader.download.VideoDownloadManager;
 import com.baijiahulian.downloader.download.VideoDownloadService;
+import com.baijiahulian.downloader.download.VideoNetExceptionBean;
 import com.baijiahulian.downloader.listener.DownloadListener;
 import com.baijiahulian.downloader.task.ExecutorWithListener;
 
@@ -208,7 +209,7 @@ public class DownloadManagerActivity extends AppCompatActivity implements View.O
                         if (TextUtils.isEmpty(token)) {
                             token = "test12345678";
                         }
-                        downloadManager.addDownloadVideoTask(downloadInfo.getVideoId(), token, downloadInfo.getVideoType(),
+                        downloadManager.addDownloadVideoTask(downloadInfo.getFileName(),downloadInfo.getVideoId(), token, downloadInfo.getVideoType(),
                                 downloadInfo.getEncryptType(), new VideoDownloadManager.OnVideoInfoGetListener() {
                                     @Override
                                     public void onVideoInfoGetSuccess() {
@@ -216,8 +217,8 @@ public class DownloadManagerActivity extends AppCompatActivity implements View.O
                                     }
 
                                     @Override
-                                    public void onVideoInfoGetFailed(String msg) {
-                                        printMsg(msg);
+                                    public void onVideoInfoGetFailed(VideoNetExceptionBean netExceptionBean) {
+                                        printMsg(netExceptionBean.msg);
                                     }
                                 });
                         break;

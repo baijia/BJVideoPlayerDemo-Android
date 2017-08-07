@@ -11,19 +11,19 @@
         android:id="@+id/btn_test"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="test环境" />
+        android:text="test环境[百家云内部]" />
 
     <Button
         android:id="@+id/btn_beta"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="beta环境" />
+        android:text="beta环境[百家云内部]" />
 
     <Button
         android:id="@+id/btn_online"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="online环境" />
+        android:text="online环境[客户使用]" />
 
     <!--<Button-->
         <!--android:id="@+id/btn_download_lab"-->

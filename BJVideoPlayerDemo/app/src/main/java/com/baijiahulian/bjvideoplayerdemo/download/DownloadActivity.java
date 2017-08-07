@@ -16,6 +16,11 @@ import android.widget.Toast;
 import com.baijiahulian.bjvideoplayerdemo.R;
 import com.baijiahulian.downloader.download.VideoDownloadManager;
 import com.baijiahulian.downloader.download.VideoDownloadService;
+import com.baijiahulian.downloader.download.VideoNetExceptionBean;
+import com.baijiahulian.player.BJPlayerView;
+import com.baijiahulian.player.bean.VideoItem;
+
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -41,6 +46,12 @@ public class DownloadActivity extends AppCompatActivity {
     EditText etVideoType;
     @Bind(R.id.rg_encode_group)
     RadioGroup rgEncode;
+    @Bind(R.id.et_video_name)
+    EditText etFileName;
+    @Bind(R.id.tv_video_got_all_definition)
+    TextView tvAllDefinition;
+    @Bind(R.id.btn_goto_video_get_all_definition)
+    Button btnGetDefinition;
 
     private VideoDownloadManager downloadManager;
 
@@ -50,10 +61,9 @@ public class DownloadActivity extends AppCompatActivity {
         setContentView(R.layout.activity_download);
         ButterKnife.bind(this);
 
-        //全局初始化
+        //初始化
         downloadManager = VideoDownloadService.getDownloadManager(this);
-        //下载业务层初始化
-        downloadManager.initDownloadPartner(32975272, getIntent().getIntExtra("extra_data", 0));
+        downloadManager.initDownloadPartner(32975272, BJPlayerView.PLAYER_DEPLOY_DEBUG);
         //设置下载目标路径
         downloadManager.setTargetFolder(Environment.getExternalStorageDirectory().getAbsolutePath() + "/aa_video_downloaded/");
 
@@ -82,6 +92,29 @@ public class DownloadActivity extends AppCompatActivity {
                 startActivity(new Intent(getApplicationContext(), DownloadManagerActivity.class));
             }
         });
+
+        btnGetDefinition.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String vid = etVid.getText().toString().trim();
+                String token = etToken.getText().toString().trim();
+                tvAllDefinition.setText("");
+                downloadManager.getVideoDefinitionById(Integer.valueOf(vid), token, new VideoDownloadManager.OnVideoDefinitionListener() {
+                    @Override
+                    public void onVideoDefinitionSuccess(List<VideoItem.DefinitionItem> definitionItemList) {
+                        for (VideoItem.DefinitionItem item : definitionItemList) {
+                            tvAllDefinition.append(item.name + " ");
+                        }
+                    }
+
+                    @Override
+                    public void onVideoDefinitionFailed(String msg) {
+                        Toast.makeText(DownloadActivity.this, msg, Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+
         btnVideoDownload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -101,8 +134,10 @@ public class DownloadActivity extends AppCompatActivity {
                     encryptType = 0;
                 }
 
+                String fileName = etFileName.getText().toString().trim();
+
                 //添加一个下载任务，vid:视频id，token:视频token，type：视频清晰度（0普清 1高清 2超清），encryptType：加密类型（0 不加密，1加密）
-                downloadManager.addDownloadVideoTask(Integer.valueOf(vid), token, type, encryptType, new VideoDownloadManager.OnVideoInfoGetListener() {
+                downloadManager.addDownloadVideoTask(fileName, Integer.valueOf(vid), token, type, encryptType, new VideoDownloadManager.OnVideoInfoGetListener() {
                     @Override
                     public void onVideoInfoGetSuccess() {
                         runOnUiThread(new Runnable() {
@@ -114,11 +149,11 @@ public class DownloadActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onVideoInfoGetFailed(final String msg) {
+                    public void onVideoInfoGetFailed(final VideoNetExceptionBean netExceptionBean) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Toast.makeText(DownloadActivity.this, msg, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(DownloadActivity.this, netExceptionBean.msg, Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
