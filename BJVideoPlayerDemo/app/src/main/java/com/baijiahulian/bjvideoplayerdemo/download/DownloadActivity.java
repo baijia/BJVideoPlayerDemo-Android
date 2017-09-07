@@ -13,6 +13,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.baijiahulian.BJVideoPlayerSDK;
 import com.baijiahulian.bjvideoplayerdemo.R;
 import com.baijiahulian.downloader.download.VideoDownloadManager;
 import com.baijiahulian.downloader.download.VideoDownloadService;
@@ -56,6 +57,15 @@ public class DownloadActivity extends AppCompatActivity {
     private VideoDownloadManager downloadManager;
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        /**
+         * 释放下载模块
+         * */
+        BJVideoPlayerSDK.getInstance().releaseDownloadClient();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_download);
@@ -63,6 +73,12 @@ public class DownloadActivity extends AppCompatActivity {
 
         //初始化
         downloadManager = VideoDownloadService.getDownloadManager(this);
+        /**
+         * 请改成您的partnerId和部署环境
+         *     public static final int PLAYER_DEPLOY_DEBUG = 0; 百家云测试
+         *     public static final int PLAYER_DEPLOY_BETA = 1;  百家云测试
+         *     public static final int PLAYER_DEPLOY_ONLINE = 2;  客户集成使用
+         * */
         downloadManager.initDownloadPartner(32975272, BJPlayerView.PLAYER_DEPLOY_DEBUG);
         //设置下载目标路径
         downloadManager.setTargetFolder(Environment.getExternalStorageDirectory().getAbsolutePath() + "/aa_video_downloaded/");

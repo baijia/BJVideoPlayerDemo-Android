@@ -16,6 +16,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.baijiahulian.BJVideoPlayerSDK;
 import com.baijiahulian.bjvideoplayerdemo.R;
 import com.baijiahulian.bjvideoplayerdemo.download.DownloadActivity;
 import com.baijiahulian.common.networkv2.BJNetCall;
@@ -57,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
     private String TOKEN = "test12345678";
     private TextView tvDeploy;
     private int deployType;
+    private EditText etDBName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
 
         etToken = (EditText) findViewById(R.id.et_token);
         tvDeploy = (TextView) findViewById(R.id.tv_deploy_type);
+        etDBName = (EditText) findViewById(R.id.et_download_db_name);
         if (deployType == BJPlayerView.PLAYER_DEPLOY_DEBUG) {
             etToken.setText("test12345678");
             tvDeploy.setText("当前环境： test");
@@ -336,6 +339,14 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btn_download_test).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String dbName = etDBName.getText().toString().trim();
+                /**
+                 * 设置用户数据库名称，比如 123.db  如果app不使用sdk下载模块或者下载不区分用户则不必调用
+                 * 请务必在VideoDownloadManager初始化之前调用
+                 * 传 .db结尾的字符串
+                 * */
+                BJVideoPlayerSDK.getInstance().setCurUserDBName(dbName);
+
                 AppPermissions.newPermissions(MainActivity.this)
                         .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                         .observeOn(AndroidSchedulers.mainThread())

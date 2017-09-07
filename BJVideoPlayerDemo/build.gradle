@@ -15,8 +15,8 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
-//        maven { url '/Users/wangkangfei/project/maven/' }
-        maven { url 'https://raw.github.com/baijia/maven/master/' }
+        maven { url '/Users/wangkangfei/project/maven/' }  //local
+        maven { url 'https://raw.github.com/baijia/maven/master/' }   //remote
     }
 }
 
