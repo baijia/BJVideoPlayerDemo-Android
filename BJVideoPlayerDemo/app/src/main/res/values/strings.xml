@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">BJVideoPlayerDemo</string>
+    <string name="app_name">VideoPlayer</string>
     <string name="action_settings">Settings</string>
     <string name="hint_ip_address">IP Address or Hostname</string>
     <string name="ping">Ping</string>

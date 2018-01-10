@@ -32,7 +32,23 @@
             android:layout_weight="1"
             android:onClick="onClick"
             android:text="开始所有" />
+
+        <Button
+            android:id="@+id/removeSpecific"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="onClick"
+            android:text="删除某几个文件" />
+
     </LinearLayout>
+
+    <EditText
+        android:id="@+id/et_task_del_key"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="要删除的taskkey，逗号分隔（test）" />
+
 
     <ListView
         android:id="@+id/listView"

@@ -100,7 +100,8 @@
         android:background="#3E0"
         android:padding="5dp"
         android:text="只删除任务"
-        android:textColor="#FFF" />
+        android:textColor="#FFF"
+        android:visibility="gone" />
 
     <Button
         android:id="@+id/remove_file"
@@ -121,5 +122,6 @@
         android:background="#03E"
         android:padding="5dp"
         android:text="重新\n下载"
-        android:textColor="#FFF" />
+        android:textColor="#FFF"
+        android:visibility="gone" />
 </LinearLayout>

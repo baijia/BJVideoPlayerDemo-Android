@@ -23,13 +23,13 @@
         android:id="@+id/btn_online"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="online环境[客户使用]" />
+        android:text="online环境[客户使用环境]" />
 
     <!--<Button-->
-        <!--android:id="@+id/btn_download_lab"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="下载测试" />-->
+    <!--android:id="@+id/btn_download_lab"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="下载测试" />-->
 
 
 </LinearLayout>

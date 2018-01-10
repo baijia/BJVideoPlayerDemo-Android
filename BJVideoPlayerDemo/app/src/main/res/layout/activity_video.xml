@@ -30,6 +30,27 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <RadioGroup
+                android:id="@+id/rg_seek_bar_draggable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/seek_yes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="可拖动seekbar" />
+
+                <RadioButton
+                    android:id="@+id/seek_no"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="不可拖动" />
+            </RadioGroup>
+
+
             <TextView
                 android:id="@+id/tv_deploy_type"
                 android:layout_width="match_parent"
@@ -41,18 +62,6 @@
                 android:layout_height="wrap_content"
                 android:gravity="top|left"
                 android:orientation="horizontal">
-
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                    <EditText
-                        android:id="@+id/serialId"
-                        android:layout_width="80dp"
-                        android:layout_height="wrap_content"
-                        android:hint="序列号"
-                        android:text="0" />
-                </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="wrap_content"
@@ -102,7 +111,7 @@
                     android:id="@+id/localVideo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="本地视频名或网络地址(不加密),读根目录下/aa_video_downloaded/"
+                    android:hint="本地视频名或网络地址(不加密),读根目录下/bb_video_downloaded/"
                     android:maxLines="6"
                     android:minLines="1"
                     android:text="120742_low" />
@@ -116,7 +125,7 @@
                     android:id="@+id/local_video_encrypt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="本地视频(加密)读根目录下/aa_video_downloaded/"
+                    android:hint="本地视频(加密)读根目录下/bb_video_downloaded/"
                     android:maxLines="6"
                     android:minLines="1"
                     android:text="120742_low" />
@@ -148,7 +157,7 @@
                     android:id="@+id/ad_play_method"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
 
                     <RadioButton
                         android:id="@+id/ad_no"
@@ -164,6 +173,27 @@
                         android:text="有广告" />
                 </RadioGroup>
 
+                <RadioGroup
+                    android:id="@+id/ad_play_method_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <RadioButton
+                        android:id="@+id/ad_type_video"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="视频广告" />
+
+                    <RadioButton
+                        android:id="@+id/ad_type_image"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="图片广告" />
+                </RadioGroup>
+
+
                 <Button
                     android:id="@+id/btn_download_test"
                     android:layout_width="wrap_content"
@@ -171,10 +201,9 @@
                     android:text="下载测试" />
 
                 <EditText
-                    android:id="@+id/et_download_db_name"
+                    android:id="@+id/et_user_db_name"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="db name(可选)" />
+                    android:layout_height="wrap_content" />
             </LinearLayout>
 
             <LinearLayout
@@ -187,21 +216,7 @@
                     android:id="@+id/button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="设置ID" />
-
-                <Button
-                    android:id="@+id/button_play"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="PlayVideo"
-                    android:textAllCaps="false" />
-
-                <Button
-                    android:id="@+id/button_sl"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="设置ID与列表"
-                    android:visibility="gone" />
+                    android:text="在线播放" />
 
                 <Button
                     android:id="@+id/button_localVideo"
@@ -217,43 +232,6 @@
                     android:layout_gravity="right"
                     android:text="加密播放" />
 
-
-                <Button
-                    android:id="@+id/btn_abs_path"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:text="绝对路径"
-                    android:visibility="gone" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="top|left"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/button_pause"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Pause"
-                    android:textAllCaps="false" />
-
-                <Button
-                    android:id="@+id/button_start"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Start"
-                    android:textAllCaps="false" />
-
-                <Button
-                    android:id="@+id/button_move"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Move"
-                    android:textAllCaps="false" />
             </LinearLayout>
 
             <LinearLayout
@@ -274,6 +252,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="日志上传"
+                    android:textAllCaps="false" />
+
+                <Button
+                    android:id="@+id/button_download_new"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="下载"
                     android:textAllCaps="false" />
 
             </LinearLayout>
