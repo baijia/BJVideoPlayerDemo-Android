@@ -17,7 +17,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.baijiahulian.common.networkv2.HttpException;
 import com.baijiahulian.downloader.download.DownloadInfo;
+import com.baijiahulian.player.playerview.PlayerConstants;
 import com.baijiahulian.video.R;
 import com.baijiayun.download.DownloadListener;
 import com.baijiayun.download.DownloadManager;
@@ -72,7 +74,6 @@ public class SimpleVideoDownloadActivity extends AppCompatActivity {
         rvDownload.setLayoutManager(new LinearLayoutManager(this));
         rvDownload.setAdapter(adapter);
 
-//        manager.getAllTasks()
 
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,29 +82,35 @@ public class SimpleVideoDownloadActivity extends AppCompatActivity {
                 if (TextUtils.isEmpty(videoId)) {
                     return;
                 }
-                try{
-                    // 点播下载
-                    manager.newDownloadTask("video_" + videoId, Long.parseLong(videoId), "test12345678", definitionList, 0, "haha")
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(new Action1<DownloadTask>() {
-                                @Override
-                                public void call(DownloadTask task) {
-                                    adapter.notifyDataSetChanged();
-                                }
-                            }, new Action1<Throwable>() {
-                                @Override
-                                public void call(Throwable throwable) {
-                                    throwable.printStackTrace();
-                                    Toast.makeText(SimpleVideoDownloadActivity.this, throwable.getMessage(), Toast.LENGTH_LONG).show();
-                                }
-                            });
-
-                } catch (NumberFormatException exception){
-                    Toast.makeText(SimpleVideoDownloadActivity.this, "VideoId格式不对", Toast.LENGTH_LONG).show();
-                }
-
+                newDownloadTask(videoId, "test12345678");
             }
         });
+    }
+
+
+
+    private void newDownloadTask(String videoId, String token){
+
+        try{
+            // 点播下载
+            manager.newDownloadTask("video_" + videoId, Long.parseLong(videoId), token, definitionList, 0, "haha")
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Action1<DownloadTask>() {
+                        @Override
+                        public void call(DownloadTask task) {
+                            adapter.notifyDataSetChanged();
+                        }
+                    }, new Action1<Throwable>() {
+                        @Override
+                        public void call(Throwable throwable) {
+                            throwable.printStackTrace();
+                            Toast.makeText(SimpleVideoDownloadActivity.this, throwable.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+
+        } catch (NumberFormatException exception){
+            Toast.makeText(SimpleVideoDownloadActivity.this, "VideoId格式不对", Toast.LENGTH_LONG).show();
+        }
     }
 
     private class DownloadAdapter extends RecyclerView.Adapter<DownloadViewHolder> {
@@ -168,21 +175,6 @@ public class SimpleVideoDownloadActivity extends AppCompatActivity {
                     break;
             }
 
-            /*
-            holder.remove.setText("取消");
-            holder.remove.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    task.cancel();
-                }
-            });
-            holder.restart.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    task.restart();
-                }
-            });
-            */
             holder.removeFile.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -205,7 +197,7 @@ public class SimpleVideoDownloadActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onError(final DownloadTask task, Exception e) {
+                public void onError(final DownloadTask task, HttpException e) {
                     holder.download.setText("出错");
                     holder.download.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -214,6 +206,11 @@ public class SimpleVideoDownloadActivity extends AppCompatActivity {
                         }
                     });
                     e.printStackTrace();
+                    //下载地址已失效
+                    if(e.getCode() == 403){
+                        //需要用户传入新的token
+                        newDownloadTask(String.valueOf(task.getDownloadInfo().videoId), "test12345678");
+                    }
                 }
 
                 @Override

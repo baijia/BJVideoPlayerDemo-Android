@@ -10,6 +10,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.IdRes;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioGroup;
@@ -35,6 +36,7 @@ import com.baijiahulian.player.bean.VideoItem;
 import com.baijiahulian.player.playerview.BJBottomViewPresenter;
 import com.baijiahulian.player.playerview.BJCenterViewPresenter;
 import com.baijiahulian.player.playerview.BJTopViewPresenter;
+import com.baijiahulian.player.playerview.PlayerConstants;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -99,6 +101,8 @@ public class MainActivity extends AppCompatActivity {
             etToken.setText("");
             tvDeploy.setText("当前环境： online");
         }
+        //设置点播下载的服务器环境，默认值正式环境
+        PlayerConstants.DEPLOY_TYPE = type;
         playerView = (BJPlayerView) findViewById(R.id.videoView);
         playerView.setBottomPresenter(new BJBottomViewPresenter(playerView.getBottomView()));
         playerView.setTopPresenter(new BJTopViewPresenter(playerView.getTopView()));
