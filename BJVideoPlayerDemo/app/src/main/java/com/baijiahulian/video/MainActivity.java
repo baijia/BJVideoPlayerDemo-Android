@@ -10,7 +10,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.IdRes;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioGroup;
@@ -114,7 +113,10 @@ public class MainActivity extends AppCompatActivity {
 //        playerView.setHeadTailPlayMethod(BJPlayerView.HEAD_TAIL_PLAY_NONE);
         playerView.setVideoEdgePaddingColor(Color.argb(255, 0, 0, 150));
 
-//        playerView.setVideoId(153812L, "test12345678");
+
+        EditText videoIdET = (EditText) findViewById(R.id.videoId);
+        long videoId = Long.valueOf(videoIdET.getText().toString());
+        playerView.setVideoId(videoId, etToken.getText().toString().trim());
 
         playerView.setOnPlayerViewListener(new OnPlayerViewListener() {
             @Override
@@ -347,7 +349,12 @@ public class MainActivity extends AppCompatActivity {
                         });
             }
         });
-
+        playerView.getTopViewPresenter().setOnBackClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
         getWindow().setFormat(PixelFormat.TRANSLUCENT);
     }
 
