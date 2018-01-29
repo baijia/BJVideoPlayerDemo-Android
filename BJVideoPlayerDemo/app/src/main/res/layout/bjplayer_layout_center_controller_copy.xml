@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include layout="@layout/bjplayer_layout_center_controller_dialog_copy"/>
+
+    <LinearLayout
+        android:id="@+id/bjplayer_center_controller_volume_dialog_ll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:paddingRight="20dp"
+        android:paddingLeft="20dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:gravity="center"
+        android:visibility="gone"
+        android:background="@drawable/bjplayer_bg_radius_8"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/bjplayer_center_controller_volume_ic_iv"
+            style="@style/bjplayer_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/bjplayer_ic_volume_up_white"/>
+
+        <TextView
+            android:id="@+id/bjplayer_center_controller_volume_tv"
+            style="@style/bjplayer_text_big"
+            tools:text="50%"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/bjplayer_center_video_functions_ll"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_gravity="right|center_vertical"
+        android:background="@color/bjplayer_controller_bg_99"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/bjplayer_center_video_functions_rate_tv"
+            style="@style/bjplayer_text_normal"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/bjplayer_video_functions_rate"
+            tools:text="加速"/>
+
+        <TextView
+            android:id="@+id/bjplayer_center_video_functions_frame_tv"
+            style="@style/bjplayer_text_normal"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/bjplayer_video_functions_frame_normal"
+            tools:text="标清"/>
+
+        <TextView
+            android:id="@+id/bjplayer_center_video_functions_segments_tv"
+            style="@style/bjplayer_text_normal"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:visibility="gone"
+            android:text="@string/bjplayer_video_functions_segments"
+            tools:text="课节"/>
+    </LinearLayout>
+
+    <include layout="@layout/bjplayer_layout_video_frame_copy"/>
+
+    <include layout="@layout/bjplayer_layout_video_rate_copy"/>
+
+    <include layout="@layout/bjplayer_layout_video_segments_copy"/>
+
+</FrameLayout>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="55dp"
+    android:layout_gravity="bottom"
+    android:background="@color/bjplayer_controller_bg"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp">
+
+    <ImageView
+        android:id="@+id/bjplayer_video_player_btn"
+        style="@style/bjplayer_image"
+        android:layout_width="22dp"
+        android:layout_height="match_parent"
+        android:padding="5dp" />
+
+    <ImageView
+        android:id="@+id/bjplayer_video_next_btn"
+        style="@style/bjplayer_image"
+        android:layout_width="22dp"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="10dp"
+        android:padding="5dp"
+        android:src="@drawable/bjplayer_btn_next_section"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/bjplayer_current_pos_tx"
+        style="@style/bjplayer_text_small"
+        android:layout_margin="8dp"
+        tools:text="00:23" />
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <SeekBar
+            android:id="@+id/bjplayer_seekbar"
+            style="@style/bjplayer_SeekBarTheme"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:max="100" />
+
+        <TextView
+            android:id="@+id/bjplayer_current_pos_duration_tx"
+            style="@style/bjplayer_text_small"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/bjplayer_seekbar"
+            tools:text="00:23" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/bjplayer_duration_tx"
+        style="@style/bjplayer_text_small"
+        android:layout_margin="5dp"
+        tools:text="00:23" />
+
+    <ImageView
+        android:id="@+id/bjplayer_orientation_switch_btn"
+        style="@style/bjplayer_image"
+        android:layout_width="25dp"
+        android:layout_height="match_parent"
+        android:padding="5dp"
+        android:src="@drawable/bjplayer_ic_full_screen" />
+
+
+</LinearLayout>
+

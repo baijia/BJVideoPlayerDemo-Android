@@ -32,7 +32,6 @@ import com.baijiahulian.player.BJPlayerView;
 import com.baijiahulian.player.OnPlayerViewListener;
 import com.baijiahulian.player.bean.SectionItem;
 import com.baijiahulian.player.bean.VideoItem;
-import com.baijiahulian.player.playerview.BJBottomViewPresenter;
 import com.baijiahulian.player.playerview.BJCenterViewPresenter;
 import com.baijiahulian.player.playerview.BJTopViewPresenter;
 import com.baijiahulian.player.playerview.PlayerConstants;
@@ -103,9 +102,9 @@ public class MainActivity extends AppCompatActivity {
         //设置点播下载的服务器环境，默认值正式环境
         PlayerConstants.DEPLOY_TYPE = type;
         playerView = (BJPlayerView) findViewById(R.id.videoView);
-        playerView.setBottomPresenter(new BJBottomViewPresenter(playerView.getBottomView()));
-        playerView.setTopPresenter(new BJTopViewPresenter(playerView.getTopView()));
-        BJCenterViewPresenter centerpresenter = new BJCenterViewPresenter(playerView.getCenterView());
+        playerView.setBottomPresenter(new BJBottomViewPresenterCopy(playerView.getBottomView()));
+        playerView.setTopPresenter(new BJTopViewPresenterCopy(playerView.getTopView()));
+        BJCenterViewPresenterCopy centerpresenter = new BJCenterViewPresenterCopy(playerView.getCenterView());
         centerpresenter.setRightMenuHidden(true);
         playerView.setCenterPresenter(centerpresenter);
 

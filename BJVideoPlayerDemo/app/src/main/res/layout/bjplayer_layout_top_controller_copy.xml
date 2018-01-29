@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="55dp"
+    android:layout_gravity="top"
+    android:background="@color/bjplayer_controller_bg"
+    android:orientation="horizontal"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp">
+
+    <ImageView
+        android:id="@+id/bjplayer_top_back_vertical_btn"
+        style="@style/bjplayer_image"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_gravity="center_vertical"
+        android:src="@drawable/bjplayer_ic_back"
+        android:background="@drawable/bjplayer_ic_back_circle"/>
+
+    <ImageView
+        android:id="@+id/bjplayer_top_back_horizontal_btn"
+        style="@style/bjplayer_image"
+        android:layout_width="22dp"
+        android:layout_height="match_parent"
+        android:src="@drawable/bjplayer_ic_back"
+        android:padding="5dp"/>
+
+    <TextView
+        android:id="@+id/bjplayer_top_title_tv"
+        style="@style/bjplayer_text_normal"
+        android:gravity="left"
+        android:lines="1"
+        android:ellipsize="end"
+        android:layout_width="match_parent"
+        android:layout_gravity="center_vertical"
+        tools:text="1.fawjeafowei"/>
+
+
+</LinearLayout>

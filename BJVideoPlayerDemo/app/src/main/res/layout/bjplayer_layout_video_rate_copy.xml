@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/bjplayer_layout_center_video_functions_rate_ll"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="180dp"
+    android:layout_height="match_parent"
+    android:background="@color/bjplayer_controller_bg_99"
+    android:gravity="center"
+    android:layout_gravity="right"
+    android:orientation="vertical"
+    android:visibility="gone">
+
+    <TextView
+        android:id="@+id/bjplayer_layout_center_video_functions_rate_1_btn"
+        style="@style/bjplayer_text_normal"
+        android:layout_width="52dp"
+        android:layout_height="24dp"
+        android:gravity="center"
+        tools:text="1x"
+        android:text="@string/bjplayer_video_rate_1"
+        android:background="@drawable/bjplayer_bg_radius_12"/>
+
+    <TextView
+        android:id="@+id/bjplayer_layout_center_video_functions_rate_1_5_btn"
+        style="@style/bjplayer_text_normal"
+        android:layout_marginTop="28dp"
+        android:layout_width="52dp"
+        android:layout_height="24dp"
+        android:gravity="center"
+        tools:text="1.5x"
+        android:text="@string/bjplayer_video_rate_1_5"
+        android:background="@drawable/bjplayer_bg_radius_12"/>
+
+    <TextView
+        android:id="@+id/bjplayer_layout_center_video_functions_rate_2_btn"
+        style="@style/bjplayer_text_normal"
+        android:layout_marginTop="28dp"
+        android:layout_width="52dp"
+        android:layout_height="24dp"
+        android:gravity="center"
+        tools:text="2x"
+        android:text="@string/bjplayer_video_rate_2"
+        android:textColor="@color/bjplayer_color_primary"
+        android:background="@drawable/bjplayer_bg_primary_radius_12"/>
+
+</LinearLayout>

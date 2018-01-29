@@ -19,7 +19,11 @@
         android:id="@+id/videoView"
         android:layout_width="match_parent"
         android:layout_height="180dp"
-        app:aspect_ratio="fit_parent"></com.baijiahulian.player.BJPlayerView>
+        app:aspect_ratio="fit_parent"
+        app:bottom_controller="@layout/bjplayer_layout_bottom_controller_copy"
+        app:center_controller="@layout/bjplayer_layout_center_controller_copy"
+        app:top_controller="@layout/bjplayer_layout_top_controller_copy"
+        />
 
     <ScrollView
         android:layout_width="match_parent"

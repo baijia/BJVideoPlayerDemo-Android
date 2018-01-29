@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/bjplayer_layout_center_video_functions_frame_ll"
+    android:layout_width="180dp"
+    android:layout_height="match_parent"
+    android:layout_gravity="right"
+    android:background="@color/bjplayer_controller_bg_99"
+    android:visibility="visible">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_bjplayer_center_view_definition"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="50dp">
+
+    </android.support.v7.widget.RecyclerView>
+
+</RelativeLayout>

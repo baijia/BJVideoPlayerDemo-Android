@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/bjplayer_center_video_progress_dialog_ll"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="210dp"
+    android:layout_height="wrap_content"
+    android:minHeight="110dp"
+    android:layout_gravity="center"
+    android:background="@drawable/bjplayer_bg_radius_8"
+    android:gravity="center"
+    android:visibility="gone"
+    android:orientation="vertical"
+    >
+
+    <ProgressBar
+        android:id="@+id/bjplayer_center_video_progress_dialog_loading_pb"
+        style="@style/bjplayer_progressbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"/>
+
+
+    <ImageView
+        android:id="@+id/bjplayer_center_video_progress_dialog_title_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:visibility="gone"
+        />
+
+    <TextView
+        android:id="@+id/bjplayer_center_video_progress_dialog_message_tv"
+        style="@style/bjplayer_text_big"
+        tools:text="视频信息加载失败，请重试\n[1]"
+        />
+
+    <LinearLayout
+        android:id="@+id/bjplayer_center_video_progress_dialog_buttons_ll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/bjplayer_center_video_progress_dialog_button1_tv"
+            style="@style/bjplayer_text_normal"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:background="@drawable/bjplayer_bg_radius_12"
+            tools:text="hello"/>
+
+        <TextView
+            android:id="@+id/bjplayer_center_video_progress_dialog_button2_tv"
+            style="@style/bjplayer_text_normal"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:background="@drawable/bjplayer_bg_radius_12"
+            tools:text="刷新重试"/>
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -67,7 +67,9 @@ public class SimpleVideoDownloadActivity extends AppCompatActivity {
 
         //初始化下载
         manager = DownloadService.getDownloadManager(this);
+        //设置缓存文件路径
         manager.setTargetFolder(Environment.getExternalStorageDirectory().getAbsolutePath() + "/bb_video_downloaded/");
+        //读取磁盘缓存的下载任务
         manager.loadDownloadInfo(32975272);
 
         adapter = new DownloadAdapter();
