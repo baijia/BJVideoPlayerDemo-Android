@@ -27,13 +27,10 @@ import com.baijiahulian.common.networkv2.HttpException;
 import com.baijiahulian.common.permission.AppPermissions;
 import com.baijiahulian.download.DownloadActivity;
 import com.baijiahulian.download.SimpleVideoDownloadActivity;
-import com.baijiahulian.player.BJFileLog;
 import com.baijiahulian.player.BJPlayerView;
 import com.baijiahulian.player.OnPlayerViewListener;
 import com.baijiahulian.player.bean.SectionItem;
 import com.baijiahulian.player.bean.VideoItem;
-import com.baijiahulian.player.playerview.BJCenterViewPresenter;
-import com.baijiahulian.player.playerview.BJTopViewPresenter;
 import com.baijiahulian.player.playerview.PlayerConstants;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -58,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
     private String TOKEN = "test12345678";
     private TextView tvDeploy;
     private EditText etDBName;
+    private boolean isCaton;
+    private BJBottomViewPresenterCopy bottomViewPresenterCopy;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,13 +101,14 @@ public class MainActivity extends AppCompatActivity {
         //设置点播下载的服务器环境，默认值正式环境
         PlayerConstants.DEPLOY_TYPE = type;
         playerView = (BJPlayerView) findViewById(R.id.videoView);
-        playerView.setBottomPresenter(new BJBottomViewPresenterCopy(playerView.getBottomView()));
+        bottomViewPresenterCopy = new BJBottomViewPresenterCopy(playerView.getBottomView());
+        playerView.setBottomPresenter(bottomViewPresenterCopy);
         playerView.setTopPresenter(new BJTopViewPresenterCopy(playerView.getTopView()));
-        BJCenterViewPresenterCopy centerpresenter = new BJCenterViewPresenterCopy(playerView.getCenterView());
-        centerpresenter.setRightMenuHidden(true);
+        final BJCenterViewPresenterCopy centerpresenter = new BJCenterViewPresenterCopy(playerView.getCenterView());
+        centerpresenter.setRightMenuHidden(false);
         playerView.setCenterPresenter(centerpresenter);
 
-        playerView.initPartner(32975272, type);
+        playerView.initPartner(32918144, type, 1);
 //        playerView.setHeadTailPlayMethod(BJPlayerView.HEAD_TAIL_PLAY_NONE);
         playerView.setVideoEdgePaddingColor(Color.argb(255, 0, 0, 150));
 
@@ -145,6 +145,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onUpdatePosition(BJPlayerView playerView, int position) {
                 //TODO: 播放过程中更新播放位置
+                //TODO: 如果onCaton中有dialog提示，此处务必dismiss
+                if(isCaton){
+                    centerpresenter.dismissLoading();
+                    isCaton = false;
+                }
             }
 
             @Override
@@ -173,6 +178,15 @@ public class MainActivity extends AppCompatActivity {
                 // 可以在这时获取视频时长
                 playerView.getDuration();
             }
+
+            @Override
+            public void onCaton(BJPlayerView playerView) {
+                //TODO 视频播放卡顿，卡住超过3秒。可以在此处提示正在缓冲数据
+                if(!centerpresenter.isDialogShowing()){
+                    centerpresenter.showLoading(getString(R.string.video_data_loading));
+                    isCaton = true;
+                }
+            }
         });
 
 //        playerView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
@@ -192,9 +206,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 EditText videoIdET = (EditText) findViewById(R.id.videoId);
                 long videoId = Long.valueOf(videoIdET.getText().toString());
-
+                bottomViewPresenterCopy.setCurrentPosition(0);
                 playerView.setVideoId(videoId, etToken.getText().toString().trim());
-
                 EditText startPosText = (EditText) findViewById(R.id.startPos);
                 int pos = Integer.valueOf(startPosText.getText().toString());
                 playerView.playVideo(pos);
@@ -204,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //不加密播放，传视频网络地址或者本地文件绝对路径
+        //离线播放，传视频网络地址或者本地文件绝对路径
         findViewById(R.id.button_localVideo).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -221,27 +234,9 @@ public class MainActivity extends AppCompatActivity {
                             ((EditText) findViewById(R.id.localVideo)).getText().toString();
                     File file = new File(path);
                     if (file.exists()) {
+                        //进度条进度归零
+                        bottomViewPresenterCopy.setCurrentPosition(0);
                         playerView.setVideoPath(path);
-                        playerView.playVideo(0);
-                    } else {
-                        Toast.makeText(MainActivity.this, path + "不存在的", Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    Toast.makeText(MainActivity.this, "找不到存储卡！", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-        //加密播放，传本地视频file协议
-        findViewById(R.id.button_localVideo_encrypt).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                    String encryptFileName = ((EditText) findViewById(R.id.local_video_encrypt)).getText().toString();
-                    String root = Environment.getExternalStorageDirectory().getAbsolutePath();
-                    String path = root + File.separator + "bb_video_downloaded" + File.separator + encryptFileName;
-                    File file = new File(path);
-                    if (file.exists()) {
-                        playerView.setVideoPath("file://" + path);
                         playerView.playVideo(0);
                     } else {
                         Toast.makeText(MainActivity.this, path + "不存在的", Toast.LENGTH_SHORT).show();
@@ -297,29 +292,47 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.button_upload).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                BJFileLog.getInstance().uploadLogFile("12312", "322322", new BJFileLog.OnLogFileUploadListener() {
-                    @Override
-                    public void onLogFileUploadSuccess() {
-                        //TODO:after log upload success.
-                        runOnUiThread(new Runnable() {
+                AppPermissions.newPermissions(MainActivity.this)
+                        .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Action1<Boolean>() {
                             @Override
-                            public void run() {
-                                Toast.makeText(MainActivity.this, "log upload success!", Toast.LENGTH_SHORT).show();
+                            public void call(Boolean aBoolean) {
+                                if (aBoolean) {
+                                    try {
+                                        Runtime.getRuntime().exec("logcat -v time -f /sdcard/baijia_log.txt");
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                    Toast.makeText(MainActivity.this, "日志收集已开启", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(MainActivity.this, "没有获取读写sd卡权限", Toast.LENGTH_SHORT).show();
+                                }
                             }
                         });
-                    }
-
-                    @Override
-                    public void onLogFileUploadFailed(final String errorMsg) {
-                        //TODO: after log upload failed.
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(MainActivity.this, "log upload failed:  " + errorMsg, Toast.LENGTH_LONG).show();
-                            }
-                        });
-                    }
-                });
+//                BJFileLog.getInstance().uploadLogFile("12312", "322322", new BJFileLog.OnLogFileUploadListener() {
+//                    @Override
+//                    public void onLogFileUploadSuccess() {
+//                        //TODO:after log upload success.
+//                        runOnUiThread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                Toast.makeText(MainActivity.this, "log upload success!", Toast.LENGTH_SHORT).show();
+//                            }
+//                        });
+//                    }
+//
+//                    @Override
+//                    public void onLogFileUploadFailed(final String errorMsg) {
+//                        //TODO: after log upload failed.
+//                        runOnUiThread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                Toast.makeText(MainActivity.this, "log upload failed:  " + errorMsg, Toast.LENGTH_LONG).show();
+//                            }
+//                        });
+//                    }
+//                });
             }
         });
 

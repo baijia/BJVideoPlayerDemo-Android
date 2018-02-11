@@ -8,7 +8,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.text.format.Formatter;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -19,13 +18,16 @@ import android.widget.Toast;
 
 import com.baijiahulian.common.networkv2.HttpException;
 import com.baijiahulian.downloader.download.DownloadInfo;
-import com.baijiahulian.player.playerview.PlayerConstants;
 import com.baijiahulian.video.R;
 import com.baijiayun.download.DownloadListener;
 import com.baijiayun.download.DownloadManager;
 import com.baijiayun.download.DownloadModel;
 import com.baijiayun.download.DownloadService;
 import com.baijiayun.download.DownloadTask;
+import com.baijiayun.download.IRecoveryCallback;
+import com.baijiayun.download.RecoverDbHelper;
+import com.baijiayun.download.constant.TaskStatus;
+
 import com.baijiayun.download.constant.VideoDefinition;
 
 import java.util.ArrayList;
@@ -45,15 +47,14 @@ public class SimpleVideoDownloadActivity extends AppCompatActivity {
 
     @Bind(R.id.activity_simple_download_et)
     EditText etVideoID;
-
+    @Bind(R.id.activity_simple_download_token)
+    EditText etToken;
     @Bind(R.id.activity_simple_download_add)
     Button btnAdd;
-
     @Bind(R.id.activity_simple_download_rv)
     RecyclerView rvDownload;
 
     private DownloadManager manager;
-
     private DownloadAdapter adapter;
 
     private List<VideoDefinition> definitionList = new ArrayList<>(Arrays.asList(VideoDefinition._720P,
@@ -66,11 +67,24 @@ public class SimpleVideoDownloadActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         //初始化下载
-        manager = DownloadService.getDownloadManager(this);
+        manager = DownloadService.getDownloadManager(getApplicationContext());
         //设置缓存文件路径
         manager.setTargetFolder(Environment.getExternalStorageDirectory().getAbsolutePath() + "/bb_video_downloaded/");
+        //TODO RecoverDbHelper为恢复旧版下载记录的工具类。没有从旧版迁移到新版的需求不用调用此工具类
+        RecoverDbHelper.getInstance().init(getApplicationContext(), Environment.getExternalStorageDirectory().getAbsolutePath() + "/aa_video_downloaded/",
+                new IRecoveryCallback() {
+                    @Override
+                    public void recoverySuccess() {
+                        //重新获取taskList，true代表强制刷新
+                        manager.loadDownloadInfo(32975272, 1, true);
+                        adapter.notifyDataSetChanged();
+                    }
+                });
         //读取磁盘缓存的下载任务
-        manager.loadDownloadInfo(32975272);
+        manager.loadDownloadInfo(32975272, 1);
+        //TODO 这一句必须在manager.loadDownloadInfo()之后，确保DownloadManager已初始化完毕
+        RecoverDbHelper.getInstance().recoveryDbData();
+
 
         adapter = new DownloadAdapter();
         rvDownload.setLayoutManager(new LinearLayoutManager(this));
@@ -84,18 +98,20 @@ public class SimpleVideoDownloadActivity extends AppCompatActivity {
                 if (TextUtils.isEmpty(videoId)) {
                     return;
                 }
-                newDownloadTask(videoId, "test12345678");
+                String token = etToken.getText().toString();
+                if (TextUtils.isEmpty(token)) {
+                    token = "test12345678";
+                }
+                newDownloadTask(videoId, token);
             }
         });
     }
 
 
-
-    private void newDownloadTask(String videoId, String token){
-
-        try{
+    private void newDownloadTask(String videoId, String token) {
+        try {
             // 点播下载
-            manager.newDownloadTask("video_" + videoId, Long.parseLong(videoId), token, definitionList, 0, "haha")
+            manager.newDownloadTask("video", Long.parseLong(videoId), token, definitionList, 0, "haha")
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Action1<DownloadTask>() {
                         @Override
@@ -127,11 +143,15 @@ public class SimpleVideoDownloadActivity extends AppCompatActivity {
         public void onBindViewHolder(final DownloadViewHolder holder, int i) {
             final DownloadTask task = manager.getAllTasks().get(i);
             final DownloadModel model = task.getDownloadInfo();
-            holder.name.setText(model.targetName);
+            holder.videoName.setText("视频名称：" + model.videoName);
+            holder.fileName.setText("文件名称：" + model.targetName);
             String downloadLength = Formatter.formatFileSize(SimpleVideoDownloadActivity.this, model.downloadLength);
             String totalLength = Formatter.formatFileSize(SimpleVideoDownloadActivity.this, model.totalLength);
             holder.downloadSize.setText(downloadLength + "/" + totalLength);
-            holder.pb.setProgress((int) (model.downloadLength / (float) model.totalLength * 100));
+            int progress = (int) (model.downloadLength / (float) model.totalLength * 100);
+            holder.pb.setProgress(progress);
+            holder.tvProgress.setText(progress + "%");
+            holder.netSpeed.setVisibility(task.getTaskStatus() == TaskStatus.Downloading ? View.VISIBLE : View.INVISIBLE);
             switch (task.getTaskStatus()) {
                 case Error:
                     holder.download.setText("出错");
@@ -208,8 +228,8 @@ public class SimpleVideoDownloadActivity extends AppCompatActivity {
                         }
                     });
                     e.printStackTrace();
-                    //下载地址已失效
-                    if(e.getCode() == 403){
+                    //下载地址已失效,5103(token已失效)
+                    if (e.getCode() == 403 || e.getCode() == 5103) {
                         //需要用户传入新的token
                         newDownloadTask(String.valueOf(task.getDownloadInfo().videoId), "test12345678");
                     }
@@ -265,7 +285,8 @@ public class SimpleVideoDownloadActivity extends AppCompatActivity {
     private class DownloadViewHolder extends RecyclerView.ViewHolder {
 
         private DownloadInfo downloadInfo;
-        private TextView name;
+        private TextView videoName;
+        private TextView fileName;
         private TextView downloadSize;
         private TextView tvProgress;
         private TextView netSpeed;
@@ -278,7 +299,8 @@ public class SimpleVideoDownloadActivity extends AppCompatActivity {
 
         public DownloadViewHolder(View convertView) {
             super(convertView);
-            name = (TextView) convertView.findViewById(R.id.name);
+            videoName = (TextView) convertView.findViewById(R.id.video_name_tv);
+            fileName = (TextView) convertView.findViewById(R.id.file_name_tv);
             downloadSize = (TextView) convertView.findViewById(R.id.downloadSize);
             tvProgress = (TextView) convertView.findViewById(R.id.tvProgress);
             netSpeed = (TextView) convertView.findViewById(R.id.netSpeed);

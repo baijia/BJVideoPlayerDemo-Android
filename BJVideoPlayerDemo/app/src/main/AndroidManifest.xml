@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.baijiahulian.video">
 
+    <uses-permission android:name="android.permission.READ_LOGS" />
+
     <application
         android:name="com.baijiahulian.App"
         android:allowBackup="true"

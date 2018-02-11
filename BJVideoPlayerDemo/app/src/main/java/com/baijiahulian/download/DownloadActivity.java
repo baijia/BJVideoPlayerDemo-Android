@@ -79,7 +79,7 @@ public class DownloadActivity extends AppCompatActivity {
          *     public static final int PLAYER_DEPLOY_BETA = 1;  百家云测试
          *     public static final int PLAYER_DEPLOY_ONLINE = 2;  客户集成使用
          * */
-        downloadManager.initDownloadPartner(32975272, BJPlayerView.PLAYER_DEPLOY_DEBUG);
+        downloadManager.initDownloadPartner(32975272, BJPlayerView.PLAYER_DEPLOY_DEBUG, 1);
         //设置下载目标路径
         downloadManager.setTargetFolder(Environment.getExternalStorageDirectory().getAbsolutePath() + "/aa_video_downloaded/");
 

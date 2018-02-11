@@ -167,7 +167,7 @@ public class DownloadManagerActivity extends AppCompatActivity implements View.O
 
 
         public ViewHolder(View convertView) {
-            name = (TextView) convertView.findViewById(R.id.name);
+            name = (TextView) convertView.findViewById(R.id.video_name_tv);
             downloadSize = (TextView) convertView.findViewById(R.id.downloadSize);
             tvProgress = (TextView) convertView.findViewById(R.id.tvProgress);
             netSpeed = (TextView) convertView.findViewById(R.id.netSpeed);

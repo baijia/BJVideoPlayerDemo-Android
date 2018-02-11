@@ -114,26 +114,11 @@
                     android:id="@+id/localVideo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="本地视频名或网络地址(不加密),读根目录下/bb_video_downloaded/"
+                    android:hint="本地视频名或网络地址,读根目录下/bb_video_downloaded/"
                     android:maxLines="6"
                     android:minLines="1"
                     android:text="120742_low" />
             </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <EditText
-                    android:id="@+id/local_video_encrypt"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="本地视频(加密)读根目录下/bb_video_downloaded/"
-                    android:maxLines="6"
-                    android:minLines="1"
-                    android:text="120742_low" />
-            </android.support.design.widget.TextInputLayout>
-
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
@@ -201,12 +186,14 @@
                     android:id="@+id/btn_download_test"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="下载测试" />
+                    android:textSize="12sp"
+                    android:text="下载(旧版本)" />
 
                 <EditText
                     android:id="@+id/et_user_db_name"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:hint="test.db"/>
             </LinearLayout>
 
             <LinearLayout
@@ -226,14 +213,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
-                    android:text="不加密播放" />
-
-                <Button
-                    android:id="@+id/button_localVideo_encrypt"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:text="加密播放" />
+                    android:text="离线播放" />
 
             </LinearLayout>
 

@@ -6,18 +6,28 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp">
+        android:layout_height="wrap_content">
 
         <EditText
             android:id="@+id/activity_simple_download_et"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_toLeftOf="@+id/activity_simple_download_add" />
+
+
+        <EditText
+            android:id="@+id/activity_simple_download_token"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/activity_simple_download_et"
+            android:layout_toLeftOf="@+id/activity_simple_download_add"
+            android:hint="token(仅正式环境需要填)" />
 
         <Button
             android:id="@+id/activity_simple_download_add"
             android:layout_width="100dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
             android:text="添加任务" />
 
