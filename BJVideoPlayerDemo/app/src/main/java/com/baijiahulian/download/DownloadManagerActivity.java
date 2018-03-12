@@ -26,7 +26,7 @@ import com.baijiahulian.video.R;
 import java.util.Collections;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -36,9 +36,9 @@ public class DownloadManagerActivity extends AppCompatActivity implements View.O
     private MyAdapter adapter;
     private VideoDownloadManager downloadManager;
 
-    @Bind(R.id.listView)
+    @BindView(R.id.listView)
     ListView listView;
-    @Bind(R.id.et_task_del_key)
+    @BindView(R.id.et_task_del_key)
     EditText etTaskKey;
 
     @OnClick(R.id.removeSpecific)

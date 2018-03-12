@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
         centerpresenter.setRightMenuHidden(false);
         playerView.setCenterPresenter(centerpresenter);
 
-        playerView.initPartner(32918144, type, 1);
+        playerView.initPartner(37374649, type, 1);
 //        playerView.setHeadTailPlayMethod(BJPlayerView.HEAD_TAIL_PLAY_NONE);
         playerView.setVideoEdgePaddingColor(Color.argb(255, 0, 0, 150));
 
@@ -145,11 +145,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onUpdatePosition(BJPlayerView playerView, int position) {
                 //TODO: 播放过程中更新播放位置
-                //TODO: 如果onCaton中有dialog提示，此处务必dismiss
-                if(isCaton){
-                    centerpresenter.dismissLoading();
-                    isCaton = false;
-                }
             }
 
             @Override
@@ -182,10 +177,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCaton(BJPlayerView playerView) {
                 //TODO 视频播放卡顿，卡住超过3秒。可以在此处提示正在缓冲数据
-                if(!centerpresenter.isDialogShowing()){
-                    centerpresenter.showLoading(getString(R.string.video_data_loading));
-                    isCaton = true;
-                }
             }
         });
 

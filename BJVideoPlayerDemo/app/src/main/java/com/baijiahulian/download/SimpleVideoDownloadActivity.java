@@ -25,6 +25,7 @@ import com.baijiayun.download.DownloadModel;
 import com.baijiayun.download.DownloadService;
 import com.baijiayun.download.DownloadTask;
 import com.baijiayun.download.IRecoveryCallback;
+import com.baijiayun.download.OnNetChangeListener;
 import com.baijiayun.download.RecoverDbHelper;
 import com.baijiayun.download.constant.TaskStatus;
 
@@ -34,7 +35,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -45,13 +46,13 @@ import rx.functions.Action1;
 
 public class SimpleVideoDownloadActivity extends AppCompatActivity {
 
-    @Bind(R.id.activity_simple_download_et)
+    @BindView(R.id.activity_simple_download_et)
     EditText etVideoID;
-    @Bind(R.id.activity_simple_download_token)
+    @BindView(R.id.activity_simple_download_token)
     EditText etToken;
-    @Bind(R.id.activity_simple_download_add)
+    @BindView(R.id.activity_simple_download_add)
     Button btnAdd;
-    @Bind(R.id.activity_simple_download_rv)
+    @BindView(R.id.activity_simple_download_rv)
     RecyclerView rvDownload;
 
     private DownloadManager manager;
@@ -85,11 +86,9 @@ public class SimpleVideoDownloadActivity extends AppCompatActivity {
         //TODO 这一句必须在manager.loadDownloadInfo()之后，确保DownloadManager已初始化完毕
         RecoverDbHelper.getInstance().recoveryDbData();
 
-
         adapter = new DownloadAdapter();
         rvDownload.setLayoutManager(new LinearLayoutManager(this));
         rvDownload.setAdapter(adapter);
-
 
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,8 +104,31 @@ public class SimpleVideoDownloadActivity extends AppCompatActivity {
                 newDownloadTask(videoId, token);
             }
         });
+        //TODO 下载过程中监听网络变化
+        manager.registerNetReceiver(new OnNetChangeListener() {
+            @Override
+            public void onMobile() {
+                Toast.makeText(SimpleVideoDownloadActivity.this, "当前使用手机流量", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onDisConnect() {
+                Toast.makeText(SimpleVideoDownloadActivity.this, "网络断开，请检查网络", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onNoAvailable() {
+                Toast.makeText(SimpleVideoDownloadActivity.this, "当前无可用网络", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //TODO 反注册网络监听
+        manager.unregisterNetReceiver();
+    }
 
     private void newDownloadTask(String videoId, String token) {
         try {
@@ -230,7 +252,7 @@ public class SimpleVideoDownloadActivity extends AppCompatActivity {
                     e.printStackTrace();
                     //下载地址已失效,5103(token已失效)
                     if (e.getCode() == 403 || e.getCode() == 5103) {
-                        //需要用户传入新的token
+                        //TODO 需要用户传入新的token
                         newDownloadTask(String.valueOf(task.getDownloadInfo().videoId), "test12345678");
                     }
                 }

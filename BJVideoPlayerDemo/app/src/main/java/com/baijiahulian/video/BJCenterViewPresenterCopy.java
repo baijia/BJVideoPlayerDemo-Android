@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.baijiahulian.player.BJPlayerView;
 import com.baijiahulian.player.bean.SectionItem;
 import com.baijiahulian.player.bean.VideoItem;
+import com.baijiahulian.player.playerview.CenterViewStatus;
 import com.baijiahulian.player.playerview.IPlayerCenterContact;
 import com.baijiahulian.player.utils.Utils;
 
@@ -33,6 +34,8 @@ public class BJCenterViewPresenterCopy implements IPlayerCenterContact.CenterVie
     private static final int CENTER_PAGE_RATE = 1 << 1;
     private static final int CENTER_PAGE_SEGMENTS = 1 << 2;
 
+
+    private CenterViewStatus centerViewStatus = CenterViewStatus.NONE;
     private RecyclerView courseView;
     private CourseAdapter courseAdapter;
 
@@ -92,7 +95,7 @@ public class BJCenterViewPresenterCopy implements IPlayerCenterContact.CenterVie
         initFunctions();
         definitionItemList = new ArrayList<>();
         definitionAdapter = new DefinitionAdapter(centerView.getContext());
-        rvDefinition = (RecyclerView) centerView.findViewById(com.baijiahulian.player.R.id.rv_bjplayer_center_view_definition);
+        rvDefinition =  centerView.findViewById(com.baijiahulian.player.R.id.rv_bjplayer_center_view_definition);
 //        rvDefinition.setLayoutManager(new WrappingRecyclerViewLayoutManager(centerView.getContext()));
         rvDefinition.setLayoutManager(new LinearLayoutManager(centerView.getContext()));
         rvDefinition.setAdapter(definitionAdapter);
@@ -106,7 +109,7 @@ public class BJCenterViewPresenterCopy implements IPlayerCenterContact.CenterVie
         });
 
         courseAdapter = new CourseAdapter(centerView.getContext());
-        courseView = (RecyclerView) centerView.findViewById(com.baijiahulian.player.R.id.bjplayer_layout_center_video_functions_segments_list_rv);
+        courseView =  centerView.findViewById(com.baijiahulian.player.R.id.bjplayer_layout_center_video_functions_segments_list_rv);
         courseView.setLayoutManager(new LinearLayoutManager(centerView.getContext()));
         courseView.setAdapter(courseAdapter);
         courseAdapter.setOnItemClickListener(new OnRvItemClickListener() {
@@ -161,6 +164,7 @@ public class BJCenterViewPresenterCopy implements IPlayerCenterContact.CenterVie
         } else {
             $.id(R.id.bjplayer_center_video_progress_dialog_title_iv).image(com.baijiahulian.player.R.drawable.bjplayer_ic_huitui);
         }
+        centerViewStatus = CenterViewStatus.FUNCTION;
     }
 
     @Override
@@ -174,6 +178,7 @@ public class BJCenterViewPresenterCopy implements IPlayerCenterContact.CenterVie
         $.id(R.id.bjplayer_center_video_progress_dialog_buttons_ll).gone();
         $.id(R.id.bjplayer_center_controller_volume_dialog_ll).gone();
         isDialogShowing = true;
+        centerViewStatus = CenterViewStatus.LOADING;
     }
 
     @Override
@@ -181,6 +186,7 @@ public class BJCenterViewPresenterCopy implements IPlayerCenterContact.CenterVie
         $.id(R.id.bjplayer_center_video_progress_dialog_ll).gone();
         $.id(R.id.bjplayer_center_controller_volume_dialog_ll).gone();
         isDialogShowing = false;
+        centerViewStatus = CenterViewStatus.NONE;
     }
 
     @Override
@@ -198,6 +204,7 @@ public class BJCenterViewPresenterCopy implements IPlayerCenterContact.CenterVie
             $.id(R.id.bjplayer_center_controller_volume_tv).text(value + "%");
         }
         mHandler.sendMsgDismissDialogDelay();
+        centerViewStatus = CenterViewStatus.FUNCTION;
     }
 
     @Override
@@ -209,6 +216,7 @@ public class BJCenterViewPresenterCopy implements IPlayerCenterContact.CenterVie
         $.id(R.id.bjplayer_center_controller_volume_ic_iv).image(com.baijiahulian.player.R.drawable.bjplayer_ic_brightness);
         $.id(R.id.bjplayer_center_controller_volume_tv).text(brightness + "%");
         mHandler.sendMsgDismissDialogDelay();
+        centerViewStatus = CenterViewStatus.FUNCTION;
     }
 
     @Override
@@ -220,6 +228,9 @@ public class BJCenterViewPresenterCopy implements IPlayerCenterContact.CenterVie
             error = errorTips[index];
         } else {
             error = $.contentView().getContext().getString(com.baijiahulian.player.R.string.bjplayer_error_unknow);
+        }
+        if(what == -10000){
+            error = $.contentView().getContext().getString(com.baijiahulian.player.R.string.bjplayer_video_player_error_no_network);
         }
         showError(what, error);
     }
@@ -247,6 +258,7 @@ public class BJCenterViewPresenterCopy implements IPlayerCenterContact.CenterVie
         });
 
         isDialogShowing = true;
+        centerViewStatus = CenterViewStatus.ERROR;
     }
 
     @Override
@@ -273,6 +285,7 @@ public class BJCenterViewPresenterCopy implements IPlayerCenterContact.CenterVie
             }
         });
         isDialogShowing = true;
+        centerViewStatus = CenterViewStatus.WARNING;
     }
 
     @Override
@@ -388,6 +401,11 @@ public class BJCenterViewPresenterCopy implements IPlayerCenterContact.CenterVie
             }
         }
 
+    }
+
+    @Override
+    public CenterViewStatus getStatus() {
+        return centerViewStatus;
     }
 
     private void setAnimationVisible(final int id) {
@@ -586,7 +604,7 @@ public class BJCenterViewPresenterCopy implements IPlayerCenterContact.CenterVie
             public DefinitionViewHolder(View itemView) {
                 super(itemView);
                 this.itemView = itemView;
-                tvDefinition = (TextView) itemView.findViewById(R.id.tv_bjplayer_item_center_definition);
+                tvDefinition = itemView.findViewById(R.id.tv_bjplayer_item_center_definition);
                 dividerView = itemView.findViewById(R.id.v_bjplayer_item_divider);
             }
         }
@@ -667,6 +685,11 @@ public class BJCenterViewPresenterCopy implements IPlayerCenterContact.CenterVie
                 courseName = (TextView) itemView.findViewById(R.id.bjplayer_course_item_text);
             }
         }
+    }
+
+
+    public CenterViewStatus getCenterViewStatus() {
+        return centerViewStatus;
     }
 
 }

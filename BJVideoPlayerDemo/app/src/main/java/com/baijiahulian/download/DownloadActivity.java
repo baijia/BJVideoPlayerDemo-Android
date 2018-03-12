@@ -23,35 +23,35 @@ import com.baijiahulian.video.R;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
 public class DownloadActivity extends AppCompatActivity {
 
-    @Bind(R.id.targetFolder)
+    @BindView(R.id.targetFolder)
     TextView targetFolder;
-    @Bind(R.id.tvCorePoolSize)
+    @BindView(R.id.tvCorePoolSize)
     TextView tvCorePoolSize;
-    @Bind(R.id.sbCorePoolSize)
+    @BindView(R.id.sbCorePoolSize)
     SeekBar sbCorePoolSize;
-    @Bind(R.id.openManager)
+    @BindView(R.id.openManager)
     Button openManager;
-    @Bind(R.id.btn_goto_video_download)
+    @BindView(R.id.btn_goto_video_download)
     Button btnVideoDownload;
-    @Bind(R.id.et_vid)
+    @BindView(R.id.et_vid)
     EditText etVid;
-    @Bind(R.id.et_token)
+    @BindView(R.id.et_token)
     EditText etToken;
-    @Bind(R.id.et_video_type)
+    @BindView(R.id.et_video_type)
     EditText etVideoType;
-    @Bind(R.id.rg_encode_group)
+    @BindView(R.id.rg_encode_group)
     RadioGroup rgEncode;
-    @Bind(R.id.et_video_name)
+    @BindView(R.id.et_video_name)
     EditText etFileName;
-    @Bind(R.id.tv_video_got_all_definition)
+    @BindView(R.id.tv_video_got_all_definition)
     TextView tvAllDefinition;
-    @Bind(R.id.btn_goto_video_get_all_definition)
+    @BindView(R.id.btn_goto_video_get_all_definition)
     Button btnGetDefinition;
 
     private VideoDownloadManager downloadManager;

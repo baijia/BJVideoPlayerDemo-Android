@@ -6,6 +6,7 @@ import android.widget.SeekBar;
 
 import com.baijiahulian.player.BJPlayerView;
 import com.baijiahulian.player.playerview.IPlayerBottomContact;
+import com.baijiahulian.player.utils.NetUtils;
 import com.baijiahulian.player.utils.Utils;
 
 /**
@@ -66,7 +67,11 @@ public class BJBottomViewPresenterCopy implements IPlayerBottomContact.BottomVie
         mSeekBar.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                return !isSeekBarDraggable;
+                int netType = NetUtils.getNetworkType(v.getContext());
+                if(netType <= 1 || !isSeekBarDraggable){
+                    return true;
+                }
+                return false;
             }
         });
 

@@ -29,6 +29,11 @@
         <activity android:name="com.baijiahulian.download.DownloadActivity" />
         <activity android:name="com.baijiahulian.download.DownloadManagerActivity" />
         <activity android:name="com.baijiahulian.download.SimpleVideoDownloadActivity" android:screenOrientation="portrait" />
+
+        <service
+            android:name="com.baijiayun.download.DownloadService"
+            android:enabled="true"
+            android:exported="false"/>
     </application>
 
 </manifest>
