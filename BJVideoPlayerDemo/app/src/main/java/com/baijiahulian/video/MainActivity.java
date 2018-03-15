@@ -52,10 +52,8 @@ public class MainActivity extends AppCompatActivity {
 
     BJPlayerView playerView;
     EditText etToken;
-    private String TOKEN = "test12345678";
     private TextView tvDeploy;
     private EditText etDBName;
-    private boolean isCaton;
     private BJBottomViewPresenterCopy bottomViewPresenterCopy;
 
     @Override
@@ -101,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
         //设置点播下载的服务器环境，默认值正式环境
         PlayerConstants.DEPLOY_TYPE = type;
         playerView = (BJPlayerView) findViewById(R.id.videoView);
+        //TODO 如果不需要自定义播放器样式，则centerview bottomview topview使用非Copy结尾的类替换
         bottomViewPresenterCopy = new BJBottomViewPresenterCopy(playerView.getBottomView());
         playerView.setBottomPresenter(bottomViewPresenterCopy);
         playerView.setTopPresenter(new BJTopViewPresenterCopy(playerView.getTopView()));
@@ -177,6 +176,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCaton(BJPlayerView playerView) {
                 //TODO 视频播放卡顿，卡住超过3秒。可以在此处提示正在缓冲数据
+            }
+
+            @Override
+            public String getVideoTokenWhenInvalid() {
+                //TODO 视频token出错，需要集成方重新获取并传入BJPlayerview。
+                return "test12345678";
             }
         });
 

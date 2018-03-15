@@ -148,7 +148,7 @@ public class SimpleVideoDownloadActivity extends AppCompatActivity {
                         }
                     });
 
-        } catch (NumberFormatException exception){
+        } catch (NumberFormatException exception) {
             Toast.makeText(SimpleVideoDownloadActivity.this, "VideoId格式不对", Toast.LENGTH_LONG).show();
         }
     }
@@ -251,8 +251,8 @@ public class SimpleVideoDownloadActivity extends AppCompatActivity {
                     });
                     e.printStackTrace();
                     //下载地址已失效,5103(token已失效)
-                    if (e.getCode() == 403 || e.getCode() == 5103) {
-                        //TODO 需要用户传入新的token
+                    if (e.getCode() == 403 || e.getCode() >= 5101 && e.getCode() <= 5103) {
+                        //TODO 需要用户传入新的token, 重新获取视频下载地址
                         newDownloadTask(String.valueOf(task.getDownloadInfo().videoId), "test12345678");
                     }
                 }

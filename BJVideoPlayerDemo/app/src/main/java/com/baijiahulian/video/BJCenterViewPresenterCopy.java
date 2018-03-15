@@ -229,14 +229,14 @@ public class BJCenterViewPresenterCopy implements IPlayerCenterContact.CenterVie
         } else {
             error = $.contentView().getContext().getString(com.baijiahulian.player.R.string.bjplayer_error_unknow);
         }
-        if(what == -10000){
+        if(what == 500){
             error = $.contentView().getContext().getString(com.baijiahulian.player.R.string.bjplayer_video_player_error_no_network);
         }
         showError(what, error);
     }
 
     @Override
-    public void showError(int code, String message) {
+    public void showError(final int code, String message) {
         centerView.setVisibility(View.VISIBLE);
         onHide();
         $.id(R.id.bjplayer_center_controller_volume_dialog_ll).gone();
@@ -253,7 +253,11 @@ public class BJCenterViewPresenterCopy implements IPlayerCenterContact.CenterVie
             @Override
             public void onClick(View v) {
                 dismissLoading();
-                mPlayer.playVideo();
+                if(code == 500){
+                    mPlayer.ijkInternalError();
+                } else{
+                    mPlayer.playVideo();
+                }
             }
         });
 
