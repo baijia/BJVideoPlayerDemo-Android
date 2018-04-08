@@ -45,8 +45,6 @@ public class DownloadActivity extends AppCompatActivity {
     EditText etToken;
     @BindView(R.id.et_video_type)
     EditText etVideoType;
-    @BindView(R.id.rg_encode_group)
-    RadioGroup rgEncode;
     @BindView(R.id.et_video_name)
     EditText etFileName;
     @BindView(R.id.tv_video_got_all_definition)
@@ -79,7 +77,7 @@ public class DownloadActivity extends AppCompatActivity {
          *     public static final int PLAYER_DEPLOY_BETA = 1;  百家云测试
          *     public static final int PLAYER_DEPLOY_ONLINE = 2;  客户集成使用
          * */
-        downloadManager.initDownloadPartner(32975272, BJPlayerView.PLAYER_DEPLOY_DEBUG, 1);
+        downloadManager.initDownloadPartner(32975272, BJPlayerView.PLAYER_DEPLOY_DEBUG, getIntent().getIntExtra("encryptType", 1));
         //设置下载目标路径
         downloadManager.setTargetFolder(Environment.getExternalStorageDirectory().getAbsolutePath() + "/aa_video_downloaded/");
 
@@ -95,7 +93,6 @@ public class DownloadActivity extends AppCompatActivity {
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-                String x = "";
 
             }
 
@@ -145,17 +142,10 @@ public class DownloadActivity extends AppCompatActivity {
                 } else {
                     type = Integer.valueOf(videoType);
                 }
-                int encryptType;
-                if (rgEncode.getCheckedRadioButtonId() == R.id.rb_encode_yes) {
-                    encryptType = 1;
-                } else {
-                    encryptType = 0;
-                }
-
                 String fileName = etFileName.getText().toString().trim();
 
                 //添加一个下载任务，vid:视频id，token:视频token，type：视频清晰度（0普清 1高清 2超清），encryptType：加密类型（0 不加密，1加密）
-                downloadManager.addDownloadVideoTask(fileName, Integer.valueOf(vid), token, type, encryptType, "hola extra", new VideoDownloadManager.OnVideoInfoGetListener() {
+                downloadManager.addDownloadVideoTask(fileName, Integer.valueOf(vid), token, type, 0, "hola extra", new VideoDownloadManager.OnVideoInfoGetListener() {
                     @Override
                     public void onVideoInfoGetSuccess() {
                         runOnUiThread(new Runnable() {

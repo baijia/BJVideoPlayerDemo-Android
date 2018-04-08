@@ -66,7 +66,7 @@ public class SimpleVideoDownloadActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_simple_download);
         ButterKnife.bind(this);
-
+        final int encryptType = getIntent().getIntExtra("encryptType", 1);
         //初始化下载
         manager = DownloadService.getDownloadManager(getApplicationContext());
         //设置缓存文件路径
@@ -77,12 +77,12 @@ public class SimpleVideoDownloadActivity extends AppCompatActivity {
                     @Override
                     public void recoverySuccess() {
                         //重新获取taskList，true代表强制刷新
-                        manager.loadDownloadInfo(32975272, 1, true);
+                        manager.loadDownloadInfo(32975272, encryptType, true);
                         adapter.notifyDataSetChanged();
                     }
                 });
         //读取磁盘缓存的下载任务
-        manager.loadDownloadInfo(32975272, 1);
+        manager.loadDownloadInfo(32975272, encryptType);
         //TODO 这一句必须在manager.loadDownloadInfo()之后，确保DownloadManager已初始化完毕
         RecoverDbHelper.getInstance().recoveryDbData();
 
@@ -228,7 +228,7 @@ public class SimpleVideoDownloadActivity extends AppCompatActivity {
 
             task.setDownloadListener(new DownloadListener() {
                 @Override
-                public void onProgress(DownloadTask task) {
+                public void onProgress(final DownloadTask task) {
                     String downloadLength = Formatter.formatFileSize(SimpleVideoDownloadActivity.this, model.downloadLength);
                     String totalLength = Formatter.formatFileSize(SimpleVideoDownloadActivity.this, model.totalLength);
                     holder.downloadSize.setText(downloadLength + "/" + totalLength);
@@ -237,7 +237,13 @@ public class SimpleVideoDownloadActivity extends AppCompatActivity {
                     String speed = Formatter.formatFileSize(SimpleVideoDownloadActivity.this, (long) task.getSpeed());
                     holder.netSpeed.setText(speed + "/s");
                     holder.tvProgress.setText(task.getProgress() + "%");
-
+                    holder.download.setText("暂停");
+                    holder.download.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            task.pause();
+                        }
+                    });
                 }
 
                 @Override

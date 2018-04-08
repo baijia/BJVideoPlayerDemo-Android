@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.support.annotation.IdRes;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -17,33 +16,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baijiahulian.BJVideoPlayerSDK;
-import com.baijiahulian.common.networkv2.BJNetCall;
-import com.baijiahulian.common.networkv2.BJNetCallback;
-import com.baijiahulian.common.networkv2.BJNetRequestManager;
-import com.baijiahulian.common.networkv2.BJNetworkClient;
-import com.baijiahulian.common.networkv2.BJRequestBody;
-import com.baijiahulian.common.networkv2.BJResponse;
 import com.baijiahulian.common.networkv2.HttpException;
 import com.baijiahulian.common.permission.AppPermissions;
 import com.baijiahulian.download.DownloadActivity;
 import com.baijiahulian.download.SimpleVideoDownloadActivity;
 import com.baijiahulian.player.BJPlayerView;
-import com.baijiahulian.player.OnPlayerViewListener;
+import com.baijiahulian.player.SimpleOnPlayerViewListener;
 import com.baijiahulian.player.bean.SectionItem;
 import com.baijiahulian.player.bean.VideoItem;
 import com.baijiahulian.player.playerview.PlayerConstants;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.reflect.TypeToken;
+import com.baijiayun.persistence.MemoryPlayHelper;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -55,12 +40,13 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvDeploy;
     private EditText etDBName;
     private BJBottomViewPresenterCopy bottomViewPresenterCopy;
+    private int encryptType = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video);
-        int type = getIntent().getIntExtra("extra_data", 0);
+        final int type = getIntent().getIntExtra("extra_data", 0);
 
         etToken = (EditText) findViewById(R.id.et_token);
         tvDeploy = (TextView) findViewById(R.id.tv_deploy_type);
@@ -77,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
                             public void call(Boolean aBoolean) {
                                 if (aBoolean) {
                                     Intent intent = new Intent(MainActivity.this, SimpleVideoDownloadActivity.class);
+                                    intent.putExtra("encryptType", encryptType);
                                     startActivity(intent);
                                 } else {
                                     Toast.makeText(MainActivity.this, "没有获取读写sd卡权限", Toast.LENGTH_SHORT).show();
@@ -101,22 +88,18 @@ public class MainActivity extends AppCompatActivity {
         playerView = (BJPlayerView) findViewById(R.id.videoView);
         //TODO 如果不需要自定义播放器样式，则centerview bottomview topview使用非Copy结尾的类替换
         bottomViewPresenterCopy = new BJBottomViewPresenterCopy(playerView.getBottomView());
-        playerView.setBottomPresenter(bottomViewPresenterCopy);
-        playerView.setTopPresenter(new BJTopViewPresenterCopy(playerView.getTopView()));
         final BJCenterViewPresenterCopy centerpresenter = new BJCenterViewPresenterCopy(playerView.getCenterView());
-        centerpresenter.setRightMenuHidden(false);
-        playerView.setCenterPresenter(centerpresenter);
-
-        playerView.initPartner(37374649, type, 1);
-//        playerView.setHeadTailPlayMethod(BJPlayerView.HEAD_TAIL_PLAY_NONE);
+        playerView.setPresenter(new BJTopViewPresenterCopy(playerView.getTopView()), centerpresenter, bottomViewPresenterCopy);
+        playerView.initPartner(32975272, type, encryptType);
         playerView.setVideoEdgePaddingColor(Color.argb(255, 0, 0, 150));
-
+        playerView.setEnableNetWatcher(false);
 
         EditText videoIdET = (EditText) findViewById(R.id.videoId);
         long videoId = Long.valueOf(videoIdET.getText().toString());
         playerView.setVideoId(videoId, etToken.getText().toString().trim());
 
-        playerView.setOnPlayerViewListener(new OnPlayerViewListener() {
+        //传入SimpleOnPlayerViewListener,仅需实现对集成者有用的接口，更加简洁。
+        playerView.setOnPlayerViewListener(new SimpleOnPlayerViewListener() {
             @Override
             public void onVideoInfoInitialized(BJPlayerView playerView, HttpException exception) {
                 //TODO: 视频信息初始化结束
@@ -139,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onError(BJPlayerView playerView, int code) {
                 //TODO: 播放出错
+                //code == -1 断网   code == -2 使用移动网络播放
             }
 
             @Override
@@ -174,28 +158,16 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onCaton(BJPlayerView playerView) {
-                //TODO 视频播放卡顿，卡住超过3秒。可以在此处提示正在缓冲数据
-            }
-
-            @Override
             public String getVideoTokenWhenInvalid() {
                 //TODO 视频token出错，需要集成方重新获取并传入BJPlayerview。
                 return "test12345678";
             }
         });
 
-//        playerView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
-//            @Override
-//            public void onViewAttachedToWindow(View v) {
-//
-//            }
-//
-//            @Override
-//            public void onViewDetachedFromWindow(View v) {
-//
-//            }
-//        });
+        MemoryPlayHelper memoryPlayHelper = MemoryPlayHelper.getInstance();
+        memoryPlayHelper.init(MainActivity.this, true);
+        playerView.setMemoryPlayHelper(memoryPlayHelper);
+
 
         findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -224,22 +196,34 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "设置网络地址" + input, Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                    String root = Environment.getExternalStorageDirectory().getAbsolutePath();
-                    String path = root + File.separator + "bb_video_downloaded" + File.separator +
-                            ((EditText) findViewById(R.id.localVideo)).getText().toString();
-                    File file = new File(path);
-                    if (file.exists()) {
-                        //进度条进度归零
-                        bottomViewPresenterCopy.setCurrentPosition(0);
-                        playerView.setVideoPath(path);
-                        playerView.playVideo(0);
-                    } else {
-                        Toast.makeText(MainActivity.this, path + "不存在的", Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    Toast.makeText(MainActivity.this, "找不到存储卡！", Toast.LENGTH_SHORT).show();
-                }
+                AppPermissions.newPermissions(MainActivity.this)
+                        .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Action1<Boolean>() {
+                            @Override
+                            public void call(Boolean aBoolean) {
+                                if (aBoolean) {
+                                    if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+                                        String root = Environment.getExternalStorageDirectory().getAbsolutePath();
+                                        String path = root + File.separator + "bb_video_downloaded" + File.separator +
+                                                ((EditText) findViewById(R.id.localVideo)).getText().toString();
+                                        File file = new File(path);
+                                        if (file.exists()) {
+                                            //进度条进度归零
+                                            bottomViewPresenterCopy.setCurrentPosition(0);
+                                            playerView.setVideoPath(path);
+                                            playerView.playVideo(0);
+                                        } else {
+                                            Toast.makeText(MainActivity.this, path + "不存在的", Toast.LENGTH_SHORT).show();
+                                        }
+                                    } else {
+                                        Toast.makeText(MainActivity.this, "找不到存储卡！", Toast.LENGTH_SHORT).show();
+                                    }
+                                } else {
+                                    Toast.makeText(MainActivity.this, "没有获取读写sd卡权限", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
             }
         });
 
@@ -349,7 +333,9 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void call(Boolean aBoolean) {
                                 if (aBoolean) {
-                                    startActivity(new Intent(MainActivity.this, DownloadActivity.class));
+                                    Intent intent = new Intent(MainActivity.this, DownloadActivity.class);
+                                    intent.putExtra("encryptType", encryptType);
+                                    startActivity(intent);
                                 } else {
                                     Toast.makeText(MainActivity.this, "没有获取读写sd卡权限", Toast.LENGTH_SHORT).show();
                                 }
@@ -363,6 +349,20 @@ public class MainActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+
+        ((RadioGroup) findViewById(R.id.encrypt_group)).setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if (checkedId == R.id.encrypt_rb1) {
+                    playerView.initPartner(32975272, type, 1);
+                    encryptType = 1;
+                } else {
+                    playerView.initPartner(32975272, type, 0);
+                    encryptType = 0;
+                }
+            }
+        });
+
         getWindow().setFormat(PixelFormat.TRANSLUCENT);
     }
 
@@ -403,53 +403,5 @@ public class MainActivity extends AppCompatActivity {
         if (playerView != null) {
             playerView.onDestroy();
         }
-    }
-
-    /**
-     * @deprecated
-     */
-    public void querySectionListThenSet(final long serialId, final long videoId, final String sign, final Handler handler) {
-        String queryUrl = "http://test-api.baijiacloud.com/vod/video/getPlayList";
-        Map<String, String> params = new HashMap<>();
-        params.put("vid", String.valueOf(videoId));
-        params.put("sid", String.valueOf(serialId));
-        params.put("sign", sign);
-        BJNetworkClient client = new BJNetworkClient.Builder().setEnableLog(true).build();
-        BJNetRequestManager requestManager = new BJNetRequestManager(client);
-        BJRequestBody requestBody = BJRequestBody.createWithFormEncode(params);
-        BJNetCall call = requestManager.newPostCall(queryUrl, requestBody);
-        call.executeAsync(this, new BJNetCallback() {
-            @Override
-            public void onFailure(HttpException e) {
-                handler.sendEmptyMessage(-2);
-            }
-
-            @Override
-            public void onResponse(BJResponse bjResponse) {
-                if (bjResponse.isSuccessful()) {
-                    String responseContent = null;
-                    try {
-                        responseContent = bjResponse.getResponseString();
-                        JsonParser parser = new JsonParser();
-                        JsonElement je = parser.parse(responseContent);
-                        final JsonObject jObj = je.getAsJsonObject();
-                        int code = jObj.get("code").getAsInt();
-                        if (code == 0) {
-                            GsonBuilder gb = new GsonBuilder();
-                            Gson g = gb.create();
-                            JsonArray jArr = jObj.getAsJsonObject("data").getAsJsonArray("section_list");
-                            SectionItem[] sectionList = g.fromJson(jArr, new TypeToken<SectionItem[]>() {
-                            }.getType());
-                            playerView.setVideoId(videoId, etToken.getText().toString().trim());
-                            playerView.setCustomSectionList(sectionList);
-                            handler.sendEmptyMessage(sectionList.length);
-                            return;
-                        }
-                    } catch (IOException e) {
-                    }
-                }
-                handler.sendEmptyMessage(-1);
-            }
-        });
     }
 }

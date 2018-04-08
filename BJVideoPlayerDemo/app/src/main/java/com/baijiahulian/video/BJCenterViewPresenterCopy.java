@@ -230,7 +230,7 @@ public class BJCenterViewPresenterCopy implements IPlayerCenterContact.CenterVie
             error = $.contentView().getContext().getString(com.baijiahulian.player.R.string.bjplayer_error_unknow);
         }
         if(what == 500){
-            error = $.contentView().getContext().getString(com.baijiahulian.player.R.string.bjplayer_video_player_error_no_network);
+            error = $.contentView().getContext().getString(com.baijiahulian.player.R.string.bjplayer_network_error);
         }
         showError(what, error);
     }
@@ -690,10 +690,4 @@ public class BJCenterViewPresenterCopy implements IPlayerCenterContact.CenterVie
             }
         }
     }
-
-
-    public CenterViewStatus getCenterViewStatus() {
-        return centerViewStatus;
-    }
-
 }

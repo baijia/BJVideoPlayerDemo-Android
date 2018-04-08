@@ -23,42 +23,6 @@
         android:hint="请输入 0-标清 1-高清 2-超清 3-720p 4-1080p"
         android:textSize="13sp" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:text="下载完成后是否加密(第一次设置生效): "
-            android:textColor="#000000"
-            android:textSize="15sp" />
-
-        <RadioGroup
-            android:id="@+id/rg_encode_group"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <RadioButton
-                android:id="@+id/rb_encode_yes"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="加密" />
-
-            <RadioButton
-                android:id="@+id/rb_encode_no"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="不加密" />
-
-
-        </RadioGroup>
-    </LinearLayout>
-
     <Button
         android:id="@+id/btn_goto_video_get_all_definition"
         android:layout_width="match_parent"

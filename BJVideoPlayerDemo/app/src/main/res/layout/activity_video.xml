@@ -135,6 +135,31 @@
             </android.support.design.widget.TextInputLayout>
 
 
+            <RadioGroup
+                android:id="@+id/encrypt_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/encrypt_rb1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="加密"
+                    android:checked="true"
+                    />
+
+                <RadioButton
+                    android:id="@+id/encrypt_rb2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="不加密"
+                    />
+
+            </RadioGroup>
+
+
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -42,7 +42,7 @@ dependencies {
 //    compile 'com.baijia.player:avsdk-mediaplayer:1.0.0'
     compile 'com.google.code.gson:gson'
 //    compile project(path: ':videoplayer-sdk')
-    compile 'com.baijia.player:videoplayer:1.7.2-snapshot'
+    compile 'com.baijia.player:videoplayer:1.7.7-snapshot'
 //    compile project(path: ':mediaplayer')
 
     compile 'com.android.support:appcompat-v7:25.3.0'
