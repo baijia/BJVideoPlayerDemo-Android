@@ -92,7 +92,6 @@ public class MainActivity extends AppCompatActivity {
         playerView.setPresenter(new BJTopViewPresenterCopy(playerView.getTopView()), centerpresenter, bottomViewPresenterCopy);
         playerView.initPartner(32975272, type, encryptType);
         playerView.setVideoEdgePaddingColor(Color.argb(255, 0, 0, 150));
-        playerView.setEnableNetWatcher(false);
 
         EditText videoIdET = (EditText) findViewById(R.id.videoId);
         long videoId = Long.valueOf(videoIdET.getText().toString());
