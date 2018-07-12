@@ -1,6 +1,10 @@
 # 百家云点播sdk集成文档
 请参考 http://dev.baijiacloud.com/default/wiki/detail/8
 
+CHANGELOG videoplayer 1.7.3
+==============
+- 视频加载速度优化，MP4和flv格式可配置
+
 CHANGELOG videoplayer 1.7.2
 ==============
 - 新增记忆播放功能
