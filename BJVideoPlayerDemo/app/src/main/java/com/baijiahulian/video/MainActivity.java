@@ -7,8 +7,12 @@ import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.annotation.IdRes;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioGroup;
@@ -21,11 +25,12 @@ import com.baijiahulian.common.permission.AppPermissions;
 import com.baijiahulian.download.DownloadActivity;
 import com.baijiahulian.download.SimpleVideoDownloadActivity;
 import com.baijiahulian.player.BJPlayerView;
+import com.baijiahulian.player.OnPlayerViewListener;
 import com.baijiahulian.player.SimpleOnPlayerViewListener;
 import com.baijiahulian.player.bean.SectionItem;
 import com.baijiahulian.player.bean.VideoItem;
 import com.baijiahulian.player.playerview.PlayerConstants;
-import com.baijiayun.persistence.MemoryPlayHelper;
+import com.baijiayun.download.DownloadService;
 
 import java.io.File;
 import java.io.IOException;
@@ -90,10 +95,14 @@ public class MainActivity extends AppCompatActivity {
         bottomViewPresenterCopy = new BJBottomViewPresenterCopy(playerView.getBottomView());
         final BJCenterViewPresenterCopy centerpresenter = new BJCenterViewPresenterCopy(playerView.getCenterView());
         playerView.setPresenter(new BJTopViewPresenterCopy(playerView.getTopView()), centerpresenter, bottomViewPresenterCopy);
+//        playerView.setTopPresenter(new BJTopViewPresenterCopy(playerView.getTopView()));
+//        playerView.setCenterPresenter(centerpresenter);
+//        playerView.setBottomPresenter(bottomViewPresenterCopy);
         playerView.initPartner(32975272, type, encryptType);
         playerView.setVideoEdgePaddingColor(Color.argb(255, 0, 0, 150));
 
-        EditText videoIdET = (EditText) findViewById(R.id.videoId);
+
+        final EditText videoIdET = (EditText) findViewById(R.id.videoId);
         long videoId = Long.valueOf(videoIdET.getText().toString());
         playerView.setVideoId(videoId, etToken.getText().toString().trim());
 
@@ -154,6 +163,8 @@ public class MainActivity extends AppCompatActivity {
                 //TODO: 准备好了，马上要播放
                 // 可以在这时获取视频时长
                 playerView.getDuration();
+                //设置循环播放
+                //playerView.setLooping(true);
             }
 
             @Override
@@ -162,11 +173,8 @@ public class MainActivity extends AppCompatActivity {
                 return "test12345678";
             }
         });
-
-        MemoryPlayHelper memoryPlayHelper = MemoryPlayHelper.getInstance();
-        memoryPlayHelper.init(MainActivity.this, true);
-        playerView.setMemoryPlayHelper(memoryPlayHelper);
-
+        //设置记忆播放必须在playVideo()之前调用
+        playerView.setMemoryPlayEnable(true);
 
         findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
             @Override

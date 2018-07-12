@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion '26.0.2'
+    buildToolsVersion '27.0.3'
 
     defaultConfig {
         applicationId "com.baijiahulian.video"
@@ -11,7 +11,7 @@ android {
         versionCode 3
         versionName "1.1.2"
         ndk {
-            abiFilters 'armeabi-v7a', 'armeabi','x86'
+            abiFilters 'armeabi-v7a', 'armeabi', 'x86'
         }
     }
 
@@ -42,7 +42,7 @@ dependencies {
 //    compile 'com.baijia.player:avsdk-mediaplayer:1.0.0'
     compile 'com.google.code.gson:gson'
 //    compile project(path: ':videoplayer-sdk')
-    compile 'com.baijia.player:videoplayer:1.7.2'
+    compile 'com.baijia.player:videoplayer:1.7.12'
 //    compile project(path: ':mediaplayer')
 
     compile 'com.android.support:appcompat-v7:25.3.0'

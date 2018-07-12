@@ -6,6 +6,7 @@ import android.os.Message;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -169,6 +170,7 @@ public class BJCenterViewPresenterCopy implements IPlayerCenterContact.CenterVie
 
     @Override
     public void showLoading(String message) {
+        isDialogShowing = true;
         centerView.setVisibility(View.VISIBLE);
         $.id(R.id.bjplayer_center_video_progress_dialog_ll).visible();
         $.id(R.id.bjplayer_center_video_progress_dialog_loading_pb).visible();
@@ -177,15 +179,14 @@ public class BJCenterViewPresenterCopy implements IPlayerCenterContact.CenterVie
         $.id(R.id.bjplayer_center_video_progress_dialog_message_tv).text(message);
         $.id(R.id.bjplayer_center_video_progress_dialog_buttons_ll).gone();
         $.id(R.id.bjplayer_center_controller_volume_dialog_ll).gone();
-        isDialogShowing = true;
         centerViewStatus = CenterViewStatus.LOADING;
     }
 
     @Override
     public void dismissLoading() {
+        isDialogShowing = false;
         $.id(R.id.bjplayer_center_video_progress_dialog_ll).gone();
         $.id(R.id.bjplayer_center_controller_volume_dialog_ll).gone();
-        isDialogShowing = false;
         centerViewStatus = CenterViewStatus.NONE;
     }
 
@@ -237,6 +238,8 @@ public class BJCenterViewPresenterCopy implements IPlayerCenterContact.CenterVie
 
     @Override
     public void showError(final int code, String message) {
+        mHandler.removeCallbacksAndMessages(null);
+        isDialogShowing = true;
         centerView.setVisibility(View.VISIBLE);
         onHide();
         $.id(R.id.bjplayer_center_controller_volume_dialog_ll).gone();
@@ -246,27 +249,30 @@ public class BJCenterViewPresenterCopy implements IPlayerCenterContact.CenterVie
         $.id(R.id.bjplayer_center_video_progress_dialog_message_tv).text(message + "\n[" + code + "]\n");
         $.id(R.id.bjplayer_center_video_progress_dialog_message_tv).visible();
         $.id(R.id.bjplayer_center_video_progress_dialog_buttons_ll).visible();
-        $.id(R.id.bjplayer_center_video_progress_dialog_button1_tv).visible();
         $.id(R.id.bjplayer_center_video_progress_dialog_button2_tv).gone();
-        $.id(R.id.bjplayer_center_video_progress_dialog_button1_tv).text($.contentView().getContext().getString(com.baijiahulian.player.R.string.bjplayer_video_reload));
-        $.id(R.id.bjplayer_center_video_progress_dialog_button1_tv).clicked(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismissLoading();
-                if(code == 500){
-                    mPlayer.ijkInternalError();
-                } else{
-                    mPlayer.playVideo();
+        //videoId未初始化时不显示重新加载的按钮
+        if(code != -3){
+            $.id(R.id.bjplayer_center_video_progress_dialog_button1_tv).visible();
+            $.id(R.id.bjplayer_center_video_progress_dialog_button1_tv).text($.contentView().getContext().getString(com.baijiahulian.player.R.string.bjplayer_video_reload));
+            $.id(R.id.bjplayer_center_video_progress_dialog_button1_tv).clicked(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dismissLoading();
+                    if(code == 500){
+                        mPlayer.ijkInternalError();
+                    } else{
+                        mPlayer.playVideo();
+                    }
                 }
-            }
-        });
-
-        isDialogShowing = true;
+            });
+        }
         centerViewStatus = CenterViewStatus.ERROR;
     }
 
     @Override
     public void showWarning(String warn) {
+        mHandler.removeCallbacksAndMessages(null);
+        isDialogShowing = true;
         centerView.setVisibility(View.VISIBLE);
         onHide();
 
@@ -288,7 +294,6 @@ public class BJCenterViewPresenterCopy implements IPlayerCenterContact.CenterVie
                 mPlayer.playVideo();
             }
         });
-        isDialogShowing = true;
         centerViewStatus = CenterViewStatus.WARNING;
     }
 
@@ -459,59 +464,75 @@ public class BJCenterViewPresenterCopy implements IPlayerCenterContact.CenterVie
     }
 
     private void initFunctions() {
+        $.id(com.baijiahulian.player.R.id.bjplayer_layout_center_video_functions_rate_0_7_btn).clicked(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPlayer.setVideoRate(0.7f);
+                onBackTouch();
+            }
+        });
         //set functions clicked
-        $.id(R.id.bjplayer_layout_center_video_functions_rate_1_btn).clicked(new View.OnClickListener() {
+        $.id(com.baijiahulian.player.R.id.bjplayer_layout_center_video_functions_rate_1_btn).clicked(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPlayer.setVideoRate(BJPlayerView.VIDEO_RATE_1_X);
+                mPlayer.setVideoRate(1.0f);
                 onBackTouch();
             }
         });
 
-        $.id(R.id.bjplayer_layout_center_video_functions_rate_1_5_btn).clicked(new View.OnClickListener() {
+        $.id(com.baijiahulian.player.R.id.bjplayer_layout_center_video_functions_rate_1_2_btn).clicked(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPlayer.setVideoRate(BJPlayerView.VIDEO_RATE_1_5_X);
+                mPlayer.setVideoRate(1.2f);
                 onBackTouch();
             }
         });
 
-        $.id(R.id.bjplayer_layout_center_video_functions_rate_2_btn).clicked(new View.OnClickListener() {
+        $.id(com.baijiahulian.player.R.id.bjplayer_layout_center_video_functions_rate_1_5_btn).clicked(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPlayer.setVideoRate(BJPlayerView.VIDEO_RATE_2_X);
+                mPlayer.setVideoRate(1.5f);
+                onBackTouch();
+            }
+        });
+
+        $.id(com.baijiahulian.player.R.id.bjplayer_layout_center_video_functions_rate_2_btn).clicked(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPlayer.setVideoRate(2.0f);
                 onBackTouch();
             }
         });
     }
 
     private void setFocusRate() {
-        TextView rate1 = (TextView) $.id(R.id.bjplayer_layout_center_video_functions_rate_1_btn).view();
-        TextView rate15 = (TextView) $.id(R.id.bjplayer_layout_center_video_functions_rate_1_5_btn).view();
-        TextView rate2 = (TextView) $.id(R.id.bjplayer_layout_center_video_functions_rate_2_btn).view();
+        TextView rate07 = (TextView) $.id(com.baijiahulian.player.R.id.bjplayer_layout_center_video_functions_rate_0_7_btn).view();
+        TextView rate1 = (TextView) $.id(com.baijiahulian.player.R.id.bjplayer_layout_center_video_functions_rate_1_btn).view();
+        TextView rate12 = (TextView) $.id(com.baijiahulian.player.R.id.bjplayer_layout_center_video_functions_rate_1_2_btn).view();
+        TextView rate15 = (TextView) $.id(com.baijiahulian.player.R.id.bjplayer_layout_center_video_functions_rate_1_5_btn).view();
+        TextView rate2 = (TextView) $.id(com.baijiahulian.player.R.id.bjplayer_layout_center_video_functions_rate_2_btn).view();
 
-        rate1.setTextColor(ContextCompat.getColor($.contentView().getContext(), android.R.color.white));
-        rate1.setBackgroundResource(com.baijiahulian.player.R.drawable.bjplayer_bg_radius_12);
+        TextView[] rateArray = new TextView[]{rate07, rate1, rate12, rate15, rate2};
+        for (TextView textView : rateArray) {
+            textView.setTextColor(ContextCompat.getColor($.contentView().getContext(), android.R.color.white));
+            textView.setBackgroundResource(com.baijiahulian.player.R.drawable.bjplayer_bg_radius_12);
+        }
 
-        rate15.setTextColor(ContextCompat.getColor($.contentView().getContext(), android.R.color.white));
-        rate15.setBackgroundResource(com.baijiahulian.player.R.drawable.bjplayer_bg_radius_12);
-
-        rate2.setTextColor(ContextCompat.getColor($.contentView().getContext(), android.R.color.white));
-        rate2.setBackgroundResource(com.baijiahulian.player.R.drawable.bjplayer_bg_radius_12);
-
-        switch (mPlayer.getVideoRate()) {
-            case BJPlayerView.VIDEO_RATE_1_X:
-                rate1.setTextColor(ContextCompat.getColor($.contentView().getContext(), com.baijiahulian.player.R.color.bjplayer_color_primary));
-                rate1.setBackgroundResource(com.baijiahulian.player.R.drawable.bjplayer_bg_primary_radius_12);
-                break;
-            case BJPlayerView.VIDEO_RATE_1_5_X:
-                rate15.setTextColor(ContextCompat.getColor($.contentView().getContext(), com.baijiahulian.player.R.color.bjplayer_color_primary));
-                rate15.setBackgroundResource(com.baijiahulian.player.R.drawable.bjplayer_bg_primary_radius_12);
-                break;
-            case BJPlayerView.VIDEO_RATE_2_X:
-                rate2.setTextColor(ContextCompat.getColor($.contentView().getContext(), com.baijiahulian.player.R.color.bjplayer_color_primary));
-                rate2.setBackgroundResource(com.baijiahulian.player.R.drawable.bjplayer_bg_primary_radius_12);
-                break;
+        if (mPlayer.getVideoRateInFloat() == 0.7f) {
+            rate07.setTextColor(ContextCompat.getColor($.contentView().getContext(), com.baijiahulian.player.R.color.bjplayer_color_primary));
+            rate07.setBackgroundResource(com.baijiahulian.player.R.drawable.bjplayer_bg_primary_radius_12);
+        } else if (mPlayer.getVideoRateInFloat() == 1.0f) {
+            rate1.setTextColor(ContextCompat.getColor($.contentView().getContext(), com.baijiahulian.player.R.color.bjplayer_color_primary));
+            rate1.setBackgroundResource(com.baijiahulian.player.R.drawable.bjplayer_bg_primary_radius_12);
+        } else if (mPlayer.getVideoRateInFloat() == 1.2f) {
+            rate12.setTextColor(ContextCompat.getColor($.contentView().getContext(), com.baijiahulian.player.R.color.bjplayer_color_primary));
+            rate12.setBackgroundResource(com.baijiahulian.player.R.drawable.bjplayer_bg_primary_radius_12);
+        } else if (mPlayer.getVideoRateInFloat() == 1.5f) {
+            rate15.setTextColor(ContextCompat.getColor($.contentView().getContext(), com.baijiahulian.player.R.color.bjplayer_color_primary));
+            rate15.setBackgroundResource(com.baijiahulian.player.R.drawable.bjplayer_bg_primary_radius_12);
+        } else if (mPlayer.getVideoRateInFloat() == 2.0f) {
+            rate2.setTextColor(ContextCompat.getColor($.contentView().getContext(), com.baijiahulian.player.R.color.bjplayer_color_primary));
+            rate2.setBackgroundResource(com.baijiahulian.player.R.drawable.bjplayer_bg_primary_radius_12);
         }
     }
 
@@ -519,7 +540,7 @@ public class BJCenterViewPresenterCopy implements IPlayerCenterContact.CenterVie
         private WeakReference<BJCenterViewPresenterCopy> presenter;
 
         private CenterHandler(BJCenterViewPresenterCopy presenter) {
-            this.presenter = new WeakReference<BJCenterViewPresenterCopy>(presenter);
+            this.presenter = new WeakReference<>(presenter);
         }
 
         private static final int WHAT_DISMISS_DIALOG = 0;

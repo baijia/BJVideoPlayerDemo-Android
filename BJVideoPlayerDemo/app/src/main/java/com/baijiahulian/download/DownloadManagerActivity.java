@@ -202,6 +202,7 @@ public class DownloadManagerActivity extends AppCompatActivity implements View.O
                 download.setText("等待");
             } else if (downloadInfo.getState() == DownloadManager.FINISH) {
                 netSpeed.setText("下载完成");
+                download.setText("下载完成");
             } else if (downloadInfo.getState() == DownloadManager.DOWNLOADING) {
                 String networkSpeed = Formatter.formatFileSize(DownloadManagerActivity.this, downloadInfo.getNetworkSpeed());
                 netSpeed.setText(networkSpeed + "/s");
@@ -218,6 +219,9 @@ public class DownloadManagerActivity extends AppCompatActivity implements View.O
                 switch (downloadInfo.getState()) {
                     case DownloadManager.PAUSE:
                     case DownloadManager.NONE:
+                        downloadManager.addVideoTask(downloadInfo.getFileName(), downloadInfo.getTaskKey(), downloadInfo.getRequest(), downloadInfo.getListener(), downloadInfo.getVideoId(),
+                                downloadInfo.getVideoType(), downloadInfo.getEncryptType(), downloadInfo.getVideoToken(), downloadInfo.getExtraInfo());
+                        break;
                     case DownloadManager.ERROR:
                         //token 上层传过来
                         String token = etItemToken.getText().toString().trim();
@@ -271,7 +275,9 @@ public class DownloadManagerActivity extends AppCompatActivity implements View.O
 
         @Override
         public void onFinish(DownloadInfo downloadInfo) {
-
+            if (getUserTag() == null) return;
+            ViewHolder holder = (ViewHolder) getUserTag();
+            holder.refresh();
         }
 
         @Override

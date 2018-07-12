@@ -9,7 +9,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.1'
+        classpath 'com.android.tools.build:gradle:3.1.2'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -19,8 +19,10 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
-        maven { url '/Users/wangkangfei/project/maven/' }  //local
-        maven { url 'https://raw.github.com/baijia/maven/master/' }   //remote
+//        maven { url '/Users/wangkangfei/project/maven/' }  //local
+//        maven { url 'https://raw.github.com/baijia/maven/master/' }   //remote
+//        maven { url 'http://live-cdn.baijiayun.com/android-sdk/' }、
+        maven { url 'http://git.baijiashilian.com/open-android/maven/raw/master/' }
         maven {
             url 'https://maven.google.com/'
             name 'Google'

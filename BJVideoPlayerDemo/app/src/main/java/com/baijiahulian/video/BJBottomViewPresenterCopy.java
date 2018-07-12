@@ -68,7 +68,7 @@ public class BJBottomViewPresenterCopy implements IPlayerBottomContact.BottomVie
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 int netType = NetUtils.getNetworkType(v.getContext());
-                if(netType <= 1 || !isSeekBarDraggable){
+                if(netType <= 1 && !mPlayer.isPlayLocalVideo() || !isSeekBarDraggable){
                     return true;
                 }
                 return false;
@@ -138,8 +138,7 @@ public class BJBottomViewPresenterCopy implements IPlayerBottomContact.BottomVie
 
     @Override
     public void onBufferingUpdate(int percent) {
-        // 只有 100ms 的 buf, ui 上根本看不出来
-//        mSeekBar.setSecondaryProgress(mDuration == 0 ? 0 : mSeekBar.getProgress() + percent * 100 / mDuration);
+        mSeekBar.setSecondaryProgress(percent);
     }
 
     @Override
@@ -155,5 +154,8 @@ public class BJBottomViewPresenterCopy implements IPlayerBottomContact.BottomVie
         $.id(R.id.bjplayer_current_pos_duration_tx).text(String.format("%s/%s", positionText, durationText));
 
         mSeekBar.setProgress(mDuration == 0 ? 0 : mCurrentPosition * 100 / mDuration);
+        if(mCurrentPosition == 0){
+            mSeekBar.setSecondaryProgress(0);
+        }
     }
 }

@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.text.format.Formatter;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -54,9 +55,15 @@ public class SimpleVideoDownloadActivity extends AppCompatActivity {
     Button btnAdd;
     @BindView(R.id.activity_simple_download_rv)
     RecyclerView rvDownload;
+    @BindView(R.id.all_start)
+    Button allStartBtn;
+    @BindView(R.id.all_stop)
+    Button allStopBtn;
 
     private DownloadManager manager;
     private DownloadAdapter adapter;
+
+    int encryptType;
 
     private List<VideoDefinition> definitionList = new ArrayList<>(Arrays.asList(VideoDefinition._720P,
             VideoDefinition.SHD, VideoDefinition.HD, VideoDefinition.SD, VideoDefinition._1080P));
@@ -66,9 +73,9 @@ public class SimpleVideoDownloadActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_simple_download);
         ButterKnife.bind(this);
-        final int encryptType = getIntent().getIntExtra("encryptType", 1);
+        encryptType = getIntent().getIntExtra("encryptType", 1);
         //初始化下载
-        manager = DownloadService.getDownloadManager(getApplicationContext());
+        manager = CustomDownloadService.getDownloadManager(this);
         //设置缓存文件路径
         manager.setTargetFolder(Environment.getExternalStorageDirectory().getAbsolutePath() + "/bb_video_downloaded/");
         //TODO RecoverDbHelper为恢复旧版下载记录的工具类。没有从旧版迁移到新版的需求不用调用此工具类
@@ -104,6 +111,25 @@ public class SimpleVideoDownloadActivity extends AppCompatActivity {
                 newDownloadTask(videoId, token);
             }
         });
+
+        allStartBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for(DownloadTask downloadTask : manager.getAllTasks()){
+                    downloadTask.start();
+                }
+            }
+        });
+
+
+        allStopBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for(DownloadTask downloadTask : manager.getAllTasks()){
+                    downloadTask.pause();
+                }
+            }
+        });
         //TODO 下载过程中监听网络变化
         manager.registerNetReceiver(new OnNetChangeListener() {
             @Override
@@ -133,11 +159,13 @@ public class SimpleVideoDownloadActivity extends AppCompatActivity {
     private void newDownloadTask(String videoId, String token) {
         try {
             // 点播下载
-            manager.newDownloadTask("video", Long.parseLong(videoId), token, definitionList, 0, "haha")
+            manager.newDownloadTask("video", Long.parseLong(videoId), token, definitionList, encryptType, "haha")
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Action1<DownloadTask>() {
                         @Override
                         public void call(DownloadTask task) {
+                            //开启下载的守护service
+                            CustomDownloadService.startService();
                             adapter.notifyDataSetChanged();
                         }
                     }, new Action1<Throwable>() {
@@ -272,6 +300,7 @@ public class SimpleVideoDownloadActivity extends AppCompatActivity {
                             task.start();
                         }
                     });
+                    Log.d("taskCallback", "onPaused invoke");
                 }
 
                 @Override
@@ -283,6 +312,7 @@ public class SimpleVideoDownloadActivity extends AppCompatActivity {
                             task.pause();
                         }
                     });
+                    Log.d("taskCallback", "onStarted invoke");
                 }
 
                 @Override
@@ -295,6 +325,7 @@ public class SimpleVideoDownloadActivity extends AppCompatActivity {
                     holder.downloadSize.setText(downloadLength + "/" + totalLength);
                     holder.download.setText("完成");
                     holder.download.setOnClickListener(null);
+                    Log.d("taskCallback", "onFinish invoke");
                 }
 
                 @Override

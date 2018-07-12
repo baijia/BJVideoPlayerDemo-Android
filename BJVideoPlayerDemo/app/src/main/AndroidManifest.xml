@@ -31,7 +31,7 @@
         <activity android:name="com.baijiahulian.download.SimpleVideoDownloadActivity" android:screenOrientation="portrait" />
 
         <service
-            android:name="com.baijiayun.download.DownloadService"
+            android:name="com.baijiahulian.download.CustomDownloadService"
             android:enabled="true"
             android:exported="false"/>
     </application>

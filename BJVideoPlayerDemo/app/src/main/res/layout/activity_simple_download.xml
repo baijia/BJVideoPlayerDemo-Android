@@ -33,6 +33,26 @@
 
     </RelativeLayout>
 
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/all_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="全部开始"/>
+
+        <Button
+            android:id="@+id/all_stop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="全部暂停"/>
+
+    </LinearLayout>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/activity_simple_download_rv"
         android:layout_width="match_parent"
