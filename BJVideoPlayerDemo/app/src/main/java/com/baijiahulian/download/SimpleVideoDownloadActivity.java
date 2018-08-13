@@ -175,7 +175,6 @@ public class SimpleVideoDownloadActivity extends AppCompatActivity {
                             Toast.makeText(SimpleVideoDownloadActivity.this, throwable.getMessage(), Toast.LENGTH_LONG).show();
                         }
                     });
-
         } catch (NumberFormatException exception) {
             Toast.makeText(SimpleVideoDownloadActivity.this, "VideoId格式不对", Toast.LENGTH_LONG).show();
         }
@@ -262,7 +261,7 @@ public class SimpleVideoDownloadActivity extends AppCompatActivity {
                     holder.downloadSize.setText(downloadLength + "/" + totalLength);
                     holder.pb.setProgress((int) (model.downloadLength / (float) model.totalLength * 100));
                     holder.netSpeed.setVisibility(View.VISIBLE);
-                    String speed = Formatter.formatFileSize(SimpleVideoDownloadActivity.this, (long) task.getSpeed());
+                    String speed = Formatter.formatFileSize(SimpleVideoDownloadActivity.this, task.getSpeed());
                     holder.netSpeed.setText(speed + "/s");
                     holder.tvProgress.setText(task.getProgress() + "%");
                     holder.download.setText("暂停");
@@ -343,32 +342,25 @@ public class SimpleVideoDownloadActivity extends AppCompatActivity {
 
     private class DownloadViewHolder extends RecyclerView.ViewHolder {
 
-        private DownloadInfo downloadInfo;
         private TextView videoName;
         private TextView fileName;
         private TextView downloadSize;
         private TextView tvProgress;
         private TextView netSpeed;
         private Button download;
-        private Button remove;
-        private Button restart;
         private ProgressBar pb;
-        private EditText etItemToken;
         private Button removeFile;
 
         public DownloadViewHolder(View convertView) {
             super(convertView);
-            videoName = (TextView) convertView.findViewById(R.id.video_name_tv);
-            fileName = (TextView) convertView.findViewById(R.id.file_name_tv);
-            downloadSize = (TextView) convertView.findViewById(R.id.downloadSize);
-            tvProgress = (TextView) convertView.findViewById(R.id.tvProgress);
-            netSpeed = (TextView) convertView.findViewById(R.id.netSpeed);
-            download = (Button) convertView.findViewById(R.id.start);
-            remove = (Button) convertView.findViewById(R.id.remove);
-            restart = (Button) convertView.findViewById(R.id.restart);
-            pb = (ProgressBar) convertView.findViewById(R.id.pb_progress);
-            etItemToken = (EditText) convertView.findViewById(R.id.et_item_token);
-            removeFile = (Button) convertView.findViewById(R.id.remove_file);
+            videoName = convertView.findViewById(R.id.video_name_tv);
+            fileName = convertView.findViewById(R.id.file_name_tv);
+            downloadSize = convertView.findViewById(R.id.downloadSize);
+            tvProgress = convertView.findViewById(R.id.tvProgress);
+            netSpeed = convertView.findViewById(R.id.netSpeed);
+            download = convertView.findViewById(R.id.start);
+            pb = convertView.findViewById(R.id.pb_progress);
+            removeFile = convertView.findViewById(R.id.remove_file);
         }
     }
 

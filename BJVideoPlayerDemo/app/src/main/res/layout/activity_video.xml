@@ -23,6 +23,7 @@
         app:bottom_controller="@layout/bjplayer_layout_bottom_controller_copy"
         app:center_controller="@layout/bjplayer_layout_center_controller_copy"
         app:top_controller="@layout/bjplayer_layout_top_controller_copy"
+        app:bjplayer_type="ijk_surface_view"
         />
 
     <ScrollView
@@ -99,7 +100,7 @@
                     android:id="@+id/et_token"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="视频id的token,不能是空，我就不判断了"
+                    android:hint="视频token,不能为空"
                     android:maxLines="6"
                     android:minLines="1"
                     android:text="test12345678" />
@@ -134,31 +135,65 @@
                     android:minLines="1" />
             </android.support.design.widget.TextInputLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <RadioGroup
+                    android:id="@+id/encrypt_group"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/encrypt_rb1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="加密"
+                        android:checked="true"
+                        />
+
+                    <RadioButton
+                        android:id="@+id/encrypt_rb2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="不加密"
+                        />
+                </RadioGroup>
+
+                <CheckBox
+                    android:id='@+id/audio_cb'
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="纯音频"/>
+
+
+            </LinearLayout>
 
             <RadioGroup
-                android:id="@+id/encrypt_group"
+                android:id="@+id/video_view_group"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
                 <RadioButton
-                    android:id="@+id/encrypt_rb1"
+                    android:id="@+id/surface_view_rb"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="加密"
-                    android:checked="true"
+                    android:text="SurfaceView"
                     />
 
                 <RadioButton
-                    android:id="@+id/encrypt_rb2"
+                    android:id="@+id/texture_view_rb"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="不加密"
+                    android:text="TextureView"
+                    android:checked="true"
                     />
 
             </RadioGroup>
-
-
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -219,6 +254,27 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="test.db"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+
+                <EditText
+                    android:id="@+id/custom_domain_et"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:hint="个性域名"
+                    />
+
+                <Button
+                    android:id="@+id/custom_domain_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="设置"
+                    />
             </LinearLayout>
 
             <LinearLayout

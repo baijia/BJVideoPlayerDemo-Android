@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="55dp"
@@ -17,16 +16,6 @@
         android:layout_width="22dp"
         android:layout_height="match_parent"
         android:padding="5dp" />
-
-    <ImageView
-        android:id="@+id/bjplayer_video_next_btn"
-        style="@style/bjplayer_image"
-        android:layout_width="22dp"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="10dp"
-        android:padding="5dp"
-        android:src="@drawable/bjplayer_btn_next_section"
-        android:visibility="gone" />
 
     <TextView
         android:id="@+id/bjplayer_current_pos_tx"

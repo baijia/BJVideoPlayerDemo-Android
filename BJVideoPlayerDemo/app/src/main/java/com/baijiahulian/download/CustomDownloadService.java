@@ -91,7 +91,15 @@ public class CustomDownloadService extends Service {
                         .build();
             startForeground(1001, notification);
             Log.d("bjy", "onCreate startForeground");
+
         }
+        manager.setAllFinishListener(new DownloadManager.TaskAllFinishListener() {
+            @Override
+            public void onAllFinish() {
+                Log.d("bjy", "onAllFinish invoke");
+                stopSelf();
+            }
+        });
     }
 
     //隐藏通知

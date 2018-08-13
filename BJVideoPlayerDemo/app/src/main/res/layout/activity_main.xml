@@ -43,7 +43,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:aspect_ratio="fit_parent_16_9"
-        app:player_type="android"
         app:auto_play="false"
         />
 

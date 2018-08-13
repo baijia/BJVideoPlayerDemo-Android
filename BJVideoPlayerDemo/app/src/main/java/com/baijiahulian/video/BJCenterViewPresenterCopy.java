@@ -6,6 +6,7 @@ import android.os.Message;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,6 +54,7 @@ public class BJCenterViewPresenterCopy implements IPlayerCenterContact.CenterVie
 
     private boolean isRightMenuHidden = false;
     private View centerView;
+    private boolean isBackTouch;
 
     public void setRightMenuHidden(boolean rightMenuHidden) {
         isRightMenuHidden = rightMenuHidden;
@@ -131,7 +133,9 @@ public class BJCenterViewPresenterCopy implements IPlayerCenterContact.CenterVie
     public boolean onBackTouch() {
         if (mCenterPageState > CENTER_PAGE_INIT) {
             mCenterPageState = CENTER_PAGE_INIT;
+            isBackTouch = true;
             setPageView();
+            isBackTouch = false;
             return true;
         }
         return false;
@@ -323,9 +327,12 @@ public class BJCenterViewPresenterCopy implements IPlayerCenterContact.CenterVie
         if (courseAdapter != null) {
             courseAdapter.notifyDataSetChanged();
         }
-
         if (videoItem.definition != null) {
             definitionItemList = videoItem.definition;
+            if(!TextUtils.isEmpty(videoItem.audioUrl)){
+                VideoItem.DefinitionItem audioItem = new VideoItem.DefinitionItem("audio", "音频");
+                definitionItemList.add(audioItem);
+            }
             definitionAdapter.notifyDataSetChanged();
         }
         if (mPlayer.isPlayLocalVideo()) {
@@ -350,7 +357,7 @@ public class BJCenterViewPresenterCopy implements IPlayerCenterContact.CenterVie
                 if (mPlayer == null) {
                     $.id(R.id.bjplayer_center_video_functions_ll).gone();
                 }
-                if (mPlayer.getOrientation() == BJPlayerView.VIDEO_ORIENTATION_LANDSCAPE && !isRightMenuHidden) {
+                if (mPlayer.getOrientation() == BJPlayerView.VIDEO_ORIENTATION_LANDSCAPE && !isRightMenuHidden && !isBackTouch) {
                     setAnimationVisible(R.id.bjplayer_center_video_functions_ll);
                 } else {
                     $.id(R.id.bjplayer_center_video_functions_ll).gone();
@@ -391,6 +398,9 @@ public class BJCenterViewPresenterCopy implements IPlayerCenterContact.CenterVie
     public void updateDefinition() {
         if (mPlayer != null) {
             switch (mPlayer.getVideoDefinition()) {
+                case BJPlayerView.VIDEO_DEFINITION_AUDIO:
+                    $.id(R.id.bjplayer_center_video_functions_frame_tv).text($.contentView().getContext().getString(R.string.bjplayer_video_frame_audio));
+                    break;
                 case BJPlayerView.VIDEO_DEFINITION_720p:
                     $.id(R.id.bjplayer_center_video_functions_frame_tv).text($.contentView().getContext().getString(R.string.bjplayer_video_frame_720p));
                     break;

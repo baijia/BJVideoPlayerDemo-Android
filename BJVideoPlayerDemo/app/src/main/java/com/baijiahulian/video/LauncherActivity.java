@@ -43,5 +43,13 @@ public class LauncherActivity extends AppCompatActivity {
             }
         });
 
+        findViewById(R.id.btn_video_list).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(LauncherActivity.this, RvVideoActivity.class);
+                startActivity(i);
+            }
+        });
+
     }
 }

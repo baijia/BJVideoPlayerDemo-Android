@@ -7,7 +7,6 @@
     <application
         android:name="com.baijiahulian.App"
         android:allowBackup="true"
-        android:hardwareAccelerated="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
@@ -29,6 +28,8 @@
         <activity android:name="com.baijiahulian.download.DownloadActivity" />
         <activity android:name="com.baijiahulian.download.DownloadManagerActivity" />
         <activity android:name="com.baijiahulian.download.SimpleVideoDownloadActivity" android:screenOrientation="portrait" />
+        <activity android:name=".RvVideoActivity" />
+
 
         <service
             android:name="com.baijiahulian.download.CustomDownloadService"
