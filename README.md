@@ -1,6 +1,18 @@
 # 百家云点播sdk集成文档
 请参考 http://dev.baijiacloud.com/default/wiki/detail/8
 
+CHANGELOG videoplayer 1.7.16
+==============
+- 修复播放器未初始化完成调用暂停失效的bug
+- DownloadService移出sdk,用户外部实现下载保活
+- bugfix
+
+CHANGELOG videoplayer 1.7.7
+==============
+- 新增setLooping(boolean looping)实现循环播放
+- 在线播放出错自动切换cdn重试
+- bugfix
+
 CHANGELOG videoplayer 1.7.3
 ==============
 - 视频加载速度优化，MP4和flv格式可配置
