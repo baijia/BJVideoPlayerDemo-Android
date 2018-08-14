@@ -1,6 +1,11 @@
 # 百家云点播sdk集成文档
 请参考 http://dev.baijiacloud.com/default/wiki/detail/8
 
+CHANGELOG videoplayer 1.7.17
+==============
+- 支持纯音频
+- 支持个性域名
+
 CHANGELOG videoplayer 1.7.16
 ==============
 - 修复播放器未初始化完成调用暂停失效的bug
