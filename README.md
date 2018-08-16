@@ -1,6 +1,12 @@
 # 百家云点播sdk集成文档
 请参考 http://dev.baijiacloud.com/default/wiki/detail/8
 
+CHANGELOG videoplayer 1.7.19
+==============
+- 优化错误提示
+- 移除picasso
+- fix 不设置OnPlayerViewListener的空指针
+
 CHANGELOG videoplayer 1.7.17
 ==============
 - 支持纯音频
