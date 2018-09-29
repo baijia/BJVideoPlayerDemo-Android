@@ -30,6 +30,7 @@ import com.baijiahulian.player.SimpleOnPlayerViewListener;
 import com.baijiahulian.player.bean.SectionItem;
 import com.baijiahulian.player.bean.VideoItem;
 import com.baijiahulian.player.playerview.PlayerConstants;
+import com.baijiahulian.player.utils.BJLog;
 import com.baijiayun.download.DownloadManager;
 
 import java.io.File;
@@ -52,12 +53,6 @@ public class MainActivity extends AppCompatActivity {
     private static final String VIDEO_TOKEN = "video_token";
     private DownloadManager manager;
 
-    private static final int PLAYER_TYPE_IJK_SURFACE_VIEW = 2;
-    /**
-     * ijk with textureView
-     */
-    private static final int PLAYER_TYPE_IJK_TEXTURE_VIEW = 3;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,7 +73,8 @@ public class MainActivity extends AppCompatActivity {
         if(!TextUtils.isEmpty(token)){
             etToken.setText(token);
         }
-
+        //打开log,默认关闭
+        BJLog.LOG_OPEN = true;
         initPlayerView();
 
         findViewById(R.id.button_download_new).setOnClickListener(new View.OnClickListener() {
@@ -205,9 +201,9 @@ public class MainActivity extends AppCompatActivity {
             public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
                 int videoViewType = findViewById(R.id.surface_view_rb).getId();
                 if (checkedId == videoViewType) {
-                    playerView.setVideoType(PLAYER_TYPE_IJK_SURFACE_VIEW);
+                    playerView.setVideoType(BJPlayerView.PLAYER_TYPE_IJK_SURFACE_VIEW);
                 } else {
-                    playerView.setVideoType(PLAYER_TYPE_IJK_TEXTURE_VIEW);
+                    playerView.setVideoType(BJPlayerView.PLAYER_TYPE_IJK_TEXTURE_VIEW);
                 }
             }
         });
@@ -339,6 +335,8 @@ public class MainActivity extends AppCompatActivity {
 
         long videoId = Long.valueOf(videoIdET.getText().toString());
         playerView.setVideoId(videoId, etToken.getText().toString().trim());
+        //设置用户信息，供上报使用
+        playerView.setUserInfo("username", 101);
 
         //传入SimpleOnPlayerViewListener,仅需实现对集成者有用的接口，更加简洁。
         playerView.setOnPlayerViewListener(new SimpleOnPlayerViewListener() {
@@ -398,7 +396,7 @@ public class MainActivity extends AppCompatActivity {
                 // 可以在这时获取视频时长
                 playerView.getDuration();
                 //设置循环播放
-                //playerView.setLooping(true);
+                playerView.setLooping(true);
             }
 
             @Override

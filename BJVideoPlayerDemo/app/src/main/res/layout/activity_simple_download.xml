@@ -51,6 +51,12 @@
             android:layout_height="wrap_content"
             android:text="全部暂停"/>
 
+        <Button
+            android:id="@+id/batch_create_download"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="批量创建"/>
+
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView

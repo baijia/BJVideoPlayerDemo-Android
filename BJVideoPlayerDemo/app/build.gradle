@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 27
-    buildToolsVersion '27.0.3'
+    buildToolsVersion '28.0.2'
 
     defaultConfig {
         applicationId "com.baijiahulian.video"
@@ -45,17 +45,16 @@ dependencies {
 //    compile (name:'videoplayer-sdk-release', ext:'aar')
 
 //    compile 'com.baijia.player:avsdk-mediaplayer:1.0.0'
-    implementation 'com.google.code.gson:gson:2.8.2'
-//    implementation (project(path: ':videoplayer-sdk'))
 
-    implementation ('com.baijia.player:videoplayer:1.7.17'){
+    implementation ('com.baijia.player:videoplayer:1.7.26'){
         exclude group: 'com.android.support'
     }
 //    compile project(path: ':mediaplayer')
     implementation 'com.android.support:design:27.1.1'
-    implementation 'com.baijia.common:common-cache:1.1.5'
     testImplementation 'junit:junit:4.12'
-    implementation 'com.jakewharton:butterknife:8.8.1'
+    implementation ('com.jakewharton:butterknife:8.8.1'){
+        exclude group: 'com.android.support'
+    }
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     implementation 'com.baijia.common:common-permission:1.1.0'
 

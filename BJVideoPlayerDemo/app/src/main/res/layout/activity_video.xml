@@ -23,7 +23,7 @@
         app:bottom_controller="@layout/bjplayer_layout_bottom_controller_copy"
         app:center_controller="@layout/bjplayer_layout_center_controller_copy"
         app:top_controller="@layout/bjplayer_layout_top_controller_copy"
-        app:bjplayer_type="ijk_surface_view"
+        app:bjplayer_type="ijk_texture_view"
         />
 
     <ScrollView

@@ -18,18 +18,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baijiahulian.common.networkv2.HttpException;
-import com.baijiahulian.downloader.download.DownloadInfo;
+import com.baijiahulian.player.utils.Utils;
 import com.baijiahulian.video.R;
 import com.baijiayun.download.DownloadListener;
 import com.baijiayun.download.DownloadManager;
 import com.baijiayun.download.DownloadModel;
-import com.baijiayun.download.DownloadService;
 import com.baijiayun.download.DownloadTask;
 import com.baijiayun.download.IRecoveryCallback;
 import com.baijiayun.download.OnNetChangeListener;
 import com.baijiayun.download.RecoverDbHelper;
+import com.baijiayun.download.constant.DownloadInfo;
 import com.baijiayun.download.constant.TaskStatus;
-
 import com.baijiayun.download.constant.VideoDefinition;
 
 import java.util.ArrayList;
@@ -38,7 +37,9 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.functions.Action1;
 
 /**
@@ -59,12 +60,13 @@ public class SimpleVideoDownloadActivity extends AppCompatActivity {
     Button allStartBtn;
     @BindView(R.id.all_stop)
     Button allStopBtn;
+    @BindView(R.id.batch_create_download)
+    Button batchCreateDownloadBtn;
 
     private DownloadManager manager;
     private DownloadAdapter adapter;
-
     int encryptType;
-
+    private Subscription subscription;
     private List<VideoDefinition> definitionList = new ArrayList<>(Arrays.asList(VideoDefinition._720P,
             VideoDefinition.SHD, VideoDefinition.HD, VideoDefinition.SD, VideoDefinition._1080P));
 
@@ -76,6 +78,8 @@ public class SimpleVideoDownloadActivity extends AppCompatActivity {
         encryptType = getIntent().getIntExtra("encryptType", 1);
         //初始化下载
         manager = CustomDownloadService.getDownloadManager(this);
+        //自定义线程池
+        //manager.setExecutorService(Executors.newSingleThreadExecutor());
         //设置缓存文件路径
         manager.setTargetFolder(Environment.getExternalStorageDirectory().getAbsolutePath() + "/bb_video_downloaded/");
         //TODO RecoverDbHelper为恢复旧版下载记录的工具类。没有从旧版迁移到新版的需求不用调用此工具类
@@ -96,7 +100,43 @@ public class SimpleVideoDownloadActivity extends AppCompatActivity {
         adapter = new DownloadAdapter();
         rvDownload.setLayoutManager(new LinearLayoutManager(this));
         rvDownload.setAdapter(adapter);
+        initListener();
+        registerNetReceiver();
+        subscribeBatchCreateDownload();
+    }
 
+    /**
+     * 创建单个下载任务 批量创建请使用DownloadManager.batchCreateVideoDownloadTask
+     * @param videoId
+     * @param token
+     */
+    private void newDownloadTask(String videoId, String token) {
+        try {
+            // 点播下载
+            DownloadInfo downloadInfo = new DownloadInfo(Long.parseLong(videoId), token, "video", "extraInfo");
+            manager.newDownloadTask(downloadInfo, definitionList)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Action1<DownloadTask>() {
+                        @Override
+                        public void call(DownloadTask task) {
+                            //开启下载的守护service
+                            CustomDownloadService.startService();
+                            adapter.notifyDataSetChanged();
+                        }
+                    }, new Action1<Throwable>() {
+                        @Override
+                        public void call(Throwable throwable) {
+                            throwable.printStackTrace();
+                            HttpException httpException = Utils.convertException(throwable);
+                            Toast.makeText(SimpleVideoDownloadActivity.this, "[" + httpException.getCode() + "]" + httpException.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+        } catch (NumberFormatException exception) {
+            Toast.makeText(SimpleVideoDownloadActivity.this, "VideoId格式不对", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void initListener(){
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,22 +155,41 @@ public class SimpleVideoDownloadActivity extends AppCompatActivity {
         allStartBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                for(DownloadTask downloadTask : manager.getAllTasks()){
+                for (DownloadTask downloadTask : manager.getAllTasks()) {
                     downloadTask.start();
                 }
             }
         });
 
-
         allStopBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                for(DownloadTask downloadTask : manager.getAllTasks()){
+                for (DownloadTask downloadTask : manager.getAllTasks()) {
                     downloadTask.pause();
                 }
             }
         });
-        //TODO 下载过程中监听网络变化
+        batchCreateDownloadBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                List<DownloadInfo> downloadInfos = new ArrayList<>();
+                downloadInfos.add(new DownloadInfo(197052L, "test12345678", "video", "extraInfo"));
+                downloadInfos.add(new DownloadInfo(222357L, "test12345678", "video", "extraInfo"));
+                downloadInfos.add(new DownloadInfo(219333L, "test12345678", "video", "extraInfo"));
+                downloadInfos.add(new DownloadInfo(214453L, "test12345678", "video", "extraInfo"));
+                downloadInfos.add(new DownloadInfo(213699L, "test12345678", "video", "extraInfo"));
+                downloadInfos.add(new DownloadInfo(213509L, "test12345678", "video", "extraInfo"));
+                downloadInfos.add(new DownloadInfo(213497L, "test12345678", "video", "extraInfo"));
+                downloadInfos.add(new DownloadInfo(213495L, "test12345678", "video", "extraInfo"));
+                downloadInfos.add(new DownloadInfo(213484L, "test12345678", "video", "extraInfo"));
+                downloadInfos.add(new DownloadInfo(212226L, "test12345678", "video", "extraInfo"));
+                manager.batchCreateVideoDownloadTask(downloadInfos, definitionList);
+            }
+        });
+    }
+
+    private void registerNetReceiver(){
+        //下载过程中监听网络变化
         manager.registerNetReceiver(new OnNetChangeListener() {
             @Override
             public void onMobile() {
@@ -149,34 +208,51 @@ public class SimpleVideoDownloadActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * 监听批量下载
+     */
+    private void subscribeBatchCreateDownload(){
+        subscription = manager.getBatchDownloadObserver()
+                .onBackpressureBuffer()
+                //减少notifyDataSetChange次数, buffer count 可自定义
+                .buffer(10)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<List<DownloadTask>>() {
+                    @Override
+                    public void call(List<DownloadTask> downloadTasks) {
+                        Log.d("yjm", "call invoke " + downloadTasks.size());
+                        adapter.notifyDataSetChanged();
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                        adapter.notifyDataSetChanged();
+                        Log.d("yjm", "error call");
+                        //onError后需重新subscribe
+                        subscribeBatchCreateDownload();
+                    }
+                }, new Action0() {
+                    @Override
+                    public void call() {
+                        Log.d("yjm", "onComplete");
+                        //onComplete后需重新subscribe
+                        subscribeBatchCreateDownload();
+                    }
+                });
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //TODO 反注册网络监听
+        //反注册网络监听
         manager.unregisterNetReceiver();
-    }
-
-    private void newDownloadTask(String videoId, String token) {
-        try {
-            // 点播下载
-            manager.newDownloadTask("video", Long.parseLong(videoId), token, definitionList, encryptType, "haha")
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Action1<DownloadTask>() {
-                        @Override
-                        public void call(DownloadTask task) {
-                            //开启下载的守护service
-                            CustomDownloadService.startService();
-                            adapter.notifyDataSetChanged();
-                        }
-                    }, new Action1<Throwable>() {
-                        @Override
-                        public void call(Throwable throwable) {
-                            throwable.printStackTrace();
-                            Toast.makeText(SimpleVideoDownloadActivity.this, throwable.getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                    });
-        } catch (NumberFormatException exception) {
-            Toast.makeText(SimpleVideoDownloadActivity.this, "VideoId格式不对", Toast.LENGTH_LONG).show();
+        RecoverDbHelper.getInstance().setRecoveryCallback(null);
+        for(DownloadTask downloadTask : manager.getAllTasks()){
+            downloadTask.setDownloadListener(null);
+        }
+        if(!subscription.isUnsubscribed()){
+            subscription.unsubscribe();
         }
     }
 
