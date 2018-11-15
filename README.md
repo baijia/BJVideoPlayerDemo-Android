@@ -1,6 +1,12 @@
 # 百家云点播sdk集成文档
 请参考 http://dev.baijiacloud.com/default/wiki/detail/8
 
+CHANGELOG videoplayer 1.7.34
+==============
+- 下载防抖动
+- 新增日志本地记录
+- bugfix
+
 CHANGELOG videoplayer 1.7.19
 ==============
 - 优化错误提示
